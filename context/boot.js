@@ -8,7 +8,7 @@ module.exports = Object.freeze(Object.create(null, {
 const {fromJS} = require("immutable");
 
 const initialContexts = {
-  "hash:context-added": [
+  $context$added: [
     {
       label: "label",
       selector: ".context-label",
@@ -23,7 +23,7 @@ const initialContexts = {
       default: "[]",
     },
   ],
-  "hash:event": [
+  $event: [
     {
       label: "id",
       value: "id",
@@ -35,7 +35,14 @@ const initialContexts = {
       selector: ".event-actor",
       value: "textContent",
       type: "URL",
-      default: "hash:anonymous",
+      default: "hash:",
+    },
+    {
+      label: "target",
+      selector: ".event-actor",
+      value: "textContent",
+      type: "URL",
+      default: "hash:",
     },
     {
       label: "action",
@@ -59,7 +66,7 @@ const initialContexts = {
       default: "",
     },
   ],
-  "hash:sign": [
+  $sign: [
     {
       label: "pubkey",
       value: "pubkey",
@@ -72,6 +79,25 @@ const initialContexts = {
       type: "hex",
       default: "",
     },
+  ],
+  // application context example
+  linklabel: [
+    {
+      label: "actor",
+      selector: ".event-actor",
+      value: "textContent",
+      type: "string",
+      default: "",
+    },
+    {
+      label: "target",
+      selector: ".event-target",
+      value: "textContent",
+      type: "string",
+      default: "",
+    },
+  ],
+  bookmark: [
   ],
 };
 

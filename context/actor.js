@@ -68,14 +68,14 @@ function signEvent(me, event, contexts) {
   const data = Buffer.from(clone.innerHTML, "utf8");
   return eccrypto.sign(me.privkey, hash(data)).then(signBuf => {
     const attrs = {sign: signBuf, pubkey: me.pubkey};
-    return assignContext(clone, contexts["hash:sign"], attrs);
+    return assignContext(clone, contexts.$sign, attrs);
   });
 }
 
 // verify an event with pubkey: valid or error
 //export
 function verifySign(actor, event, contexts) {
-  const {sign} = scanContext(event, contexts["hash:sign"]);
+  const {sign} = scanContext(event, contexts.$sign);
   const data = Buffer.from(event.innerHTML, "utf8");
   return eccrypto.verify(actor.pubkey, hash(data), sign);
 }
@@ -84,7 +84,7 @@ function verifySign(actor, event, contexts) {
 //export
 function verifyEvent(event, contexts) {
   const {id, actor} = scanEvent(event, contexts);
-  const {pubkey} = scanContext(event, contexts["hash:sign"]);
+  const {pubkey} = scanContext(event, contexts.$sign);
   console.log(pubkey);
   if (id !== calcEventId(event))  return Promise.reject(
     Error(`Invalid event ID: ${id}`));

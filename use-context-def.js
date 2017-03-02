@@ -10,7 +10,7 @@ const events = jsdom.jsdom(`
 <body>
 
 <article class="hash-event">
-<h1 class="context-label">hash:context-added</h1>
+<h1 class="context-label">$context$added</h1>
 <pre class="context-attributes">
 [{
    "label": "label",
@@ -26,7 +26,7 @@ const events = jsdom.jsdom(`
    "default": []
 }]
 </pre>
-<div class="hash-context">hash:context-added</div>
+<div class="hash-context">$context-added</div>
 </article>
 </body>
 `).querySelectorAll("article.hash-event");
@@ -34,13 +34,13 @@ const events = jsdom.jsdom(`
 const ctx0 = epochContexts();
 const ctx1 = updateContexts(events, ctx0);
 //console.log(ctx1);
-console.log(scanContext(events[0], ctx1["hash:context-added"]));
+console.log(scanContext(events[0], ctx1.$context$added));
 
 // update values with context def
 const ev2 = events[0].cloneNode(true);
 const updateAttrs = {
-  label: "hash:context-added2",
+  label: "$context$added2",
   attributes: [1, 2, 3],
 };
-assignContext(ev2, ctx1["hash:context-added"], updateAttrs);
+assignContext(ev2, ctx1.$context$added, updateAttrs);
 console.log(ev2.outerHTML);

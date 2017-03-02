@@ -19,7 +19,7 @@ const {scanContext, assignContext} = require("./def");
 
 //export
 function scanEvent(event, contexts) {
-  const eventAttrs = contexts["hash:event"]; // special label as event
+  const eventAttrs = contexts.$event; // special label as event
   return scanContext(event, eventAttrs);
 }
 
@@ -50,5 +50,5 @@ function calcEventId(event) {
 function assignEventId(event, contexts) {
   const updated = event.cloneNode(true);
   const id = calcEventId(updated);
-  return assignContext(updated, contexts["hash:event"], {id});
+  return assignContext(updated, contexts.$event, {id});
 }

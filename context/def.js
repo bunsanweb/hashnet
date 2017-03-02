@@ -17,7 +17,7 @@ const {epochContexts} = require("./boot");
 function updateContexts(events, contexts = epochContexts()) {
   const current = Object.assign({}, contexts);
   for (const event of events) {
-    const contextAttrs = current["hash:context-added"];
+    const contextAttrs = current.$context$added;
     const attrs = scanContext(event, contextAttrs);
     // TBD: check in attrs.attributes: label, selector, value, type, default
     current[attrs.label] = attrs.attributes;
