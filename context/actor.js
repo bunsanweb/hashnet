@@ -7,6 +7,7 @@ module.exports = Object.freeze(Object.create(null, {
   signEvent: {enumerable: true, get: () => signEvent},
   verifySign: {enumerable: true, get: () => verifySign},
   verifyEvent: {enumerable: true, get: () => verifyEvent},
+  verifyEventSign: {enumerable: true, get: () => verifyEventSign},
 }));
 
 // actor functions
@@ -74,23 +75,40 @@ function signEvent(me, event, contexts) {
 
 // verify an event with pubkey: valid or error
 //export
-function verifySign(actor, event, contexts) {
+function verifySign(actor, event, contexts) { // for test
   const {sign} = scanContext(event, contexts.$sign);
-  const data = Buffer.from(event.innerHTML, "utf8");
-  return eccrypto.verify(actor.pubkey, hash(data), sign);
+  return verifyDomSign(event, sign, actor.pubkey);
 }
 
 // scan actor data from event
 //export
-function verifyEvent(event, contexts) {
+function verifyEvent(event, contexts) { // for test
   const {id, actor} = scanEvent(event, contexts);
-  const {pubkey} = scanContext(event, contexts.$sign);
-  console.log(pubkey);
-  if (id !== calcEventId(event))  return Promise.reject(
-    Error(`Invalid event ID: ${id}`));
-  if (`${actor}` !== `${idFromPubkey(pubkey)}`) return Promise.reject(
-    Error(`Invalid Pubkey of the actor ID: ${actor}`));
-  const signer = {id: actor, pubkey};
-  //TBD: what passed to
-  return verifySign(signer, event, contexts).then(_ => signer);
+  const {sign, pubkey} = scanContext(event, contexts.$sign);
+  return verifyId(event, id).
+    then(_ =>verifyPubkey(actor, pubkey)).
+    then(_ => verifyDomSign(event, sign, pubkey)).
+    then(_ => ({id: actor, pubkey}));
+}
+
+//export
+function verifyEventSign(event, eventAttrs, signAttrs) {
+  const {id, actor} = eventAttrs;
+  const {pubkey, sign} = signAttrs;
+  return verifyId(event, id).
+    then(_ => verifyPubkey(actor, pubkey)).
+    then(_ => verifyDomSign(event, sign, pubkey));
+}
+
+function verifyId(dom, id) {
+  if (id === calcEventId(dom)) return Promise.resolve(id);
+  return Promise.reject(Error(`Invalid event ID: ${id}`));
+}
+function verifyPubkey(actor, pubkey) {
+  if (`${actor}` === `${idFromPubkey(pubkey)}`) return Promise.resolve(pubkey);
+  return Promise.reject(Error(`Invalid Pubkey of the actor ID: ${actor}`));
+}
+function verifyDomSign(dom, sign, pubkey) {
+  const data = Buffer.from(dom.innerHTML, "utf8");
+  return eccrypto.verify(pubkey, hash(data), sign);
 }

@@ -33,14 +33,14 @@ const initialContexts = {
     {
       label: "actor",
       selector: ".event-actor",
-      value: "textContent",
+      value: "href",
       type: "URL",
       default: "hash:",
     },
     {
       label: "target",
-      selector: ".event-actor",
-      value: "textContent",
+      selector: ".event-target",
+      value: "href",
       type: "URL",
       default: "hash:",
     },

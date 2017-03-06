@@ -31,9 +31,10 @@ function verifyEventAttrs(attrs) {
   // - a timestamp: Date
   // - an action: string
   // - contexts: Array of string
-  return attrs.id instanceof URL &&
+  return typeof attrs.id === "string" &&
     attrs.actor instanceof URL &&
-    attrs.date instanceof Date &&
+    attrs.target instanceof URL &&
+    attrs.timestamp instanceof Date &&
     typeof attrs.action === "string" &&
     Array.isArray(attrs.contexts) &&
     attrs.contexts.every(v => typeof v === "string");
