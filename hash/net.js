@@ -81,6 +81,10 @@ class Channel {
     this.hashnet = hashnet;
     this.filter = filter;
     this.joint = new Joint();
+    //push arrived events
+    this.hashnet.arrival.forEach(
+      event => this.filter.pass(event).
+        then(event => this.joint.post(event)).catch(_ => true));
   }
 
   pull() {
