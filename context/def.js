@@ -61,6 +61,7 @@ function getValue(node, attr) {
 }
 
 function putValue(node, attr, value) {
+  if (!node) return;
   const textValue = encodeValue(value, attr);
   if (attr.value === "textContent") {
     node.textContent = textValue;

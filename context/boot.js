@@ -98,6 +98,13 @@ const initialContexts = {
     },
   ],
   bookmark: [
+    {
+      label: "note",
+      selector: ".bookmark-note",
+      value: "textContent",
+      type: "string",
+      default: "",
+    }
   ],
 };
 
