@@ -27,7 +27,7 @@ class Bookmark {
   post(url, note="", tags = []) {
     //TBD: event template
     const body = `
-    <h1>bookmark</h1>
+    <h1>bookmark to ${url}</h1>
     <div class="bookmark-note"></div>
 `;
     const dom = jsdom.jsdom(`<body>

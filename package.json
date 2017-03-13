@@ -6,9 +6,10 @@
     "node": ">=7"
   },
   "dependencies": {
+    "eccrypto": "*",
     "immutable": "*",
     "jsdom": "*",
-    "eccrypto": "*"
+    "node-forge": "*"
   },
   "devDependencies": {
   },
