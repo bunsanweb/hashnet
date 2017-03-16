@@ -9,7 +9,9 @@
     "eccrypto": "*",
     "immutable": "*",
     "jsdom": "*",
-    "node-forge": "*"
+    "node-fetch": "*",
+    "node-forge": "*",
+    "yargs": "*"
   },
   "devDependencies": {
   },

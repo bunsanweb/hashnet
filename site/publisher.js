@@ -38,12 +38,12 @@ class Publisher {
 
   list(eventId = "", length = 100) {
     if (this.events.has(eventId)) {
-      const index = this.arrived.findIndex(id => id === eventId);
-      const start = index - length;
-      return this.arrived.slice(start < 0 ? 0 : start, index);
-    } else {
-      return this.arrived.slice(0, length);
+      // list up before eventId
+      const last = this.arrived.findIndex(id => id === eventId);
+      const start = last - length;
+      return this.arrived.slice(start < 0 ? 0 : start, last);
     }
+    return this.arrived.slice(-length);
   }
 }
 

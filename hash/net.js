@@ -27,7 +27,7 @@ class HashNet {
 
   put(eventOrDom) {
     const event = eventOrDom instanceof Event ? eventOrDom :
-          makeEvent(eventOrDom, this.context);
+          makeEvent(eventOrDom, this.contexts);
     return verifyEvent(event).then(event => {
       if (this.valids.has(event.$event$id)) return true;
       this.valids.set(event.$event$id, event);
@@ -39,6 +39,9 @@ class HashNet {
     });
   }
 
+  has(id) {
+    return this.valids.has(id);
+  }
   get(id) {
     return this.valids.get(id);
   }

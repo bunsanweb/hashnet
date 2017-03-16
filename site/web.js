@@ -15,6 +15,9 @@ class Web {
     this.server = http.createServer((req, res) => handler.handle(req, res));
   }
 
+  peer(host = "localhost") {
+    return `http://${host}:${this.address.port}/`;
+  }
   get address() {
     return this.server.address();
   }
