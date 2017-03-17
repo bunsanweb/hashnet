@@ -98,7 +98,7 @@ class WebHandler {
     if (ids.length > 0) {
       const a = doc.createElement("a");
       a.className = "hash-items-before";
-      a.href = `/hash/items/${ids[0]}`;
+      a.href = `/hash/items/${ids.slice(-1)[0]}`;
       a.textContent = "before";
       doc.body.appendChild(a);
     }

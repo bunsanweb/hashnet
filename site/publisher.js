@@ -41,9 +41,9 @@ class Publisher {
       // list up before eventId
       const last = this.arrived.findIndex(id => id === eventId);
       const start = last - length;
-      return this.arrived.slice(start < 0 ? 0 : start, last);
+      return this.arrived.slice(start < 0 ? 0 : start, last).reverse();
     }
-    return this.arrived.slice(-length);
+    return this.arrived.slice(-length).reverse();
   }
 }
 

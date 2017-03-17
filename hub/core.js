@@ -13,10 +13,17 @@ class Hub {
   constructor(hashnet) {
     this.hashnet = hashnet;
     this.peers = [];
+    this.automations = [];
+  }
+
+  run(automation) {
+    this.automations.push(automation);
+    automation.start(this);
   }
 
   add(peer) {
     this.peers.push(peer);
+    this.automations.forEach(automation => automation.added(peer));
   }
 
   pullItems(peer, stopId = "", lastId = "", prevId = "") {
@@ -38,9 +45,9 @@ class Hub {
       return Promise.all(fetchingIds.map(id => this.pullItem(peer, id))).
         then(() => {
           // pick next items page
-          const last = lastId ? lastId : ids[ids.length - 1];
+          const last = lastId ? lastId : ids[0];
           if (stopIndex >= 0) return last;
-          const prev = ids[0];
+          const prev = ids.slice(-1)[0];
           return this.pullItems(peer, stopId, last, prev);
         });
     });
