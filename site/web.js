@@ -6,6 +6,7 @@ module.exports = Object.freeze(Object.create(null, {
 }));
 
 const http = require("http");
+const zlib = require("zlib");
 const jsdom = require("jsdom");
 
 class Web {
@@ -35,8 +36,7 @@ class Web {
 // - /hash/items/: ID list from begining: querySelectorAll(".hash-item")
 // - /hash/items/<ID> ID list before the ID
 // TBD
-// - /hash/me: actor pubkey
-// - /hash/actor/<Actor ID>: PUT pull request to our network
+// - /hash/site: site pubkey and actor pubkey and actor sign
 class WebHandler {
   constructor(publisher) {
     this.publisher = publisher;
@@ -64,15 +64,8 @@ class WebHandler {
 
     const doc = jsdom.jsdom();
     doc.body.appendChild(doc.importNode(dom, true));
-    const data = Buffer.from(doc.documentElement.outerHTML, "utf8");
 
-    res.writeHead(200, {
-      "content-type": "text/html;charset=utf-8",
-      "content-length": data.length,
-      "date": timestamp.toUTCString(),
-      "etag": id,
-    });
-    return res.end(data);
+    return this.sendDoc(req, res, doc, timestamp, id);
   }
 
   handleItems(req, res, match) {
@@ -103,14 +96,7 @@ class WebHandler {
       doc.body.appendChild(a);
     }
 
-    const data = Buffer.from(doc.documentElement.outerHTML, "utf8");
-
-    res.writeHead(200, {
-      "content-type": "text/html;charset=utf-8",
-      "content-length": data.length,
-      "date": timestamp.toUTCString(),
-    });
-    return res.end(data);
+    return this.sendDoc(req, res, doc, timestamp);
   }
 
   handleNotFound(req, res) {
@@ -120,5 +106,34 @@ class WebHandler {
   handleBadRequest(req, res, reason="") {
     res.writeHead(400);
     res.end(`Bad Request: ${reason}`);
+  }
+
+  sendDoc(req, res, doc, timestamp, etag) {
+    const encoding = (req.headers["accept-encoding"] || "").split(/\s*,\s*/);
+    const raw = Buffer.from(doc.documentElement.outerHTML, "utf8");
+    const header = {
+      "content-type": "text/html;charset=utf-8",
+      "date": timestamp.toUTCString(),
+    };
+    if (etag) header.etag = etag;
+    if (encoding.includes("gzip")) {
+      return zlib.gzip(raw, (err, gz) => {
+        if (err || raw.length <= gz.length) {
+          header["content-length"] = raw.length;
+          res.writeHead(200, header);
+          return res.end(raw);
+        } else {
+          //console.log(`gzip: ${raw.length} => ${gz.length}`);
+          header["content-encoding"] = "gzip";
+          header["content-length"] = gz.length;
+          res.writeHead(200, header);
+          return res.end(gz);
+        }
+      });
+    } else {
+      header["content-length"] = raw.length;
+      res.writeHead(200, header);
+      return res.end(raw);
+    }
   }
 }
