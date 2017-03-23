@@ -80,6 +80,9 @@ const initialContexts = {
       default: "",
     },
   ],
+  // hashnet peer management events
+  $peer$added: [
+  ],
   // application context example
   linklabel: [
     {

@@ -12,7 +12,7 @@ module.exports = Object.freeze(Object.create(null, {
 
 // bookmark with me
 const {URL} = require("url");
-const jsdom = require("jsdom");
+const {eventDom} = require("../util/dom");
 
 //export
 class Bookmark {
@@ -25,24 +25,10 @@ class Bookmark {
   }
 
   post(url, note="", tags = []) {
-    //TBD: event template
-    const body = `
+    const dom = eventDom(`
     <h1>bookmark to ${url}</h1>
     <div class="bookmark-note"></div>
-`;
-    const dom = jsdom.jsdom(`<body>
-<article class="hash-event" id="" pubkey="" sign="">
-  <div>${body}</div>
-  <div>
-    <a class="event-actor" href=""></a>
-    <span class="event-action"></span>
-    to <a class="event-target" href=""></a>
-    at: <span class="event-timestamp"></span>
-  </div>
-  <div>contexts: <span class="event-contexts"></span></div>
-</article>
-</body>`).querySelector("article");
-
+`);
     const attrs = {
       $event: {
         actor: this.me.id,

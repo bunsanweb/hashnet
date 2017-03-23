@@ -6,12 +6,12 @@ module.exports = Object.freeze(Object.create(null, {
 }));
 
 const {URL} = require("url");
-const fetch = require("node-fetch");
-const jsdom = require("jsdom");
+const {fetchDom, eventDom} = require("../util/dom");
 
 class Hub {
-  constructor(hashnet) {
+  constructor(hashnet, me) {
     this.hashnet = hashnet;
+    this.me = me;
     this.peers = [];
     this.automations = [];
   }
@@ -22,8 +22,10 @@ class Hub {
   }
 
   add(peer) {
+    if (this.peers.includes(peer)) return;
     this.peers.push(peer);
     this.automations.forEach(automation => automation.added(peer));
+    spawnAdded(this, peer);
   }
 
   pullItems(peer, stopId = "", lastId = "", prevId = "") {
@@ -67,8 +69,18 @@ class Hub {
   }
 }
 
-function fetchDom(urlText) {
-  return fetch(urlText).
-    then(res => res.ok ? res.text() : Promise.reject(res)).
-    then(src => jsdom.jsdom(src, {url: urlText}));
+function spawnAdded(hub, peer) {
+  const dom = eventDom(`<h1>peer added</h1>`);
+  const attrs = {
+    $event: {
+      actor: hub.me.id,
+      action: "peer added",
+      timestamp: new Date(),
+      target: new URL(peer),
+    },
+    $peer$added: {},
+  };
+  const event = hub.hashnet.makeEvent(dom, attrs);
+  hub.me.sign(event).then(signed => hub.hashnet.put(signed)).
+    catch(console.error);
 }

@@ -10,6 +10,8 @@ const {Publisher} = require("../site/publisher");
 const {Sync} = require("../site/sync");
 const {Web} = require("../site/web");
 const {Hub} = require("../hub/core");
+const {Watcher} = require("../hub/watcher");
+const {FullMesh} = require("../hub/fullmesh");
 const {Bookmark} = require("./client");
 
 function makeConsole(vars) {
@@ -28,7 +30,10 @@ function main() {
   const publisher = new Publisher(me.pubkey);
   const sync = new Sync(hashnet, me, publisher);
   const web = new Web(publisher);
-  const hub = new Hub(hashnet);
+  const hub = new Hub(hashnet, me);
+  hub.run(new FullMesh());
+  const watcher = new Watcher(hub);
+
   web.start();
   makeConsole({bookmark, publisher, web, hub});
 }

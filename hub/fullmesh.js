@@ -7,7 +7,7 @@ module.exports = Object.freeze(Object.create(null, {
 
 
 class FullMesh {
-  constructor(minMsec = 1000, maxMsec = 64000, limit = 100) {
+  constructor(minMsec = 1000, maxMsec = 32000, limit = 100) {
     this.minMsec = minMsec;
     this.maxMsec = maxMsec;
     this.limit = limit;

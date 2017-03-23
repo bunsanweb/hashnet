@@ -57,7 +57,8 @@ class HashNet {
       const contextAttrs = this.contexts[key] || [];
       assignContext(clone, contextAttrs, attrs[key]);
     });
-    const contexts = Object.keys(attrs).filter(tag => !tag.startsWith("$"));
+    const contexts = Object.keys(attrs).filter(
+      tag => !tag.startsWith("$event"));
     assignContext(clone, this.contexts.$event, {contexts});
     // assign event id
     const id = calcEventId(clone);
