@@ -7,6 +7,7 @@ const yargs = require("yargs");
 const {HashNet} = require("../hash/net");
 const {Me} = require("../hash/me");
 const {Publisher} = require("../site/publisher");
+const {SiteKey} = require("../site/sitekey");
 const {Sync} = require("../site/sync");
 const {Web} = require("../site/web");
 const {Hub} = require("../hub/core");
@@ -28,14 +29,16 @@ function main() {
   const me = new Me();
   const bookmark = new Bookmark(hashnet, me, argv.nickname);
   const publisher = new Publisher(me.pubkey);
+  const sitekey = new SiteKey();
+  const web = new Web(publisher, sitekey);
   const sync = new Sync(hashnet, me, publisher);
-  const web = new Web(publisher);
   const hub = new Hub(hashnet, me);
+  hub.addMySite(sitekey.id);
   hub.run(new FullMesh());
   const watcher = new Watcher(hub);
 
   web.start();
-  makeConsole({bookmark, publisher, web, hub});
+  makeConsole({hub, publisher, web, bookmark});
 }
 
 main();

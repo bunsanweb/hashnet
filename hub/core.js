@@ -6,6 +6,7 @@ module.exports = Object.freeze(Object.create(null, {
 }));
 
 const {URL} = require("url");
+const {makeEvent, verifyEvent} = require("../hash/event");
 const {fetchDom, eventDom} = require("../util/dom");
 
 class Hub {
@@ -13,7 +14,12 @@ class Hub {
     this.hashnet = hashnet;
     this.me = me;
     this.peers = [];
+    this.siteIds = new Map();
     this.automations = [];
+  }
+
+  addMySite(siteId) {
+    this.siteIds.set(`${siteId}`, "");
   }
 
   run(automation) {
@@ -22,10 +28,14 @@ class Hub {
   }
 
   add(peer) {
-    if (this.peers.includes(peer)) return;
-    this.peers.push(peer);
-    this.automations.forEach(automation => automation.added(peer));
-    spawnAdded(this, peer);
+    checkSiteKey(this, peer).then(peerUrl => {
+      this.peers.push(peerUrl);
+      this.automations.forEach(automation => automation.added(peerUrl));
+      spawnAdded(this, peerUrl);
+    }).catch(error => {
+      //console.log(error);
+      // To be ignored
+    });
   }
 
   pullItems(peer, stopId = "", lastId = "", prevId = "") {
@@ -67,6 +77,34 @@ class Hub {
       return this.hashnet.put(article).then(event => true);
     }).catch(err => false);
   }
+}
+
+
+function checkSiteKey(hub, peer) {
+  const peerUrl = `${new URL(peer)}`;
+  if (hub.peers.includes(peerUrl)) {
+    return Promise.reject(Error(`peer already in list: ${peerUrl}`));
+  }
+  const keyUrl = new URL(peer);
+  keyUrl.pathname = "hash/sitekey";
+  const urlText = `${keyUrl}`;
+  return fetchDom(urlText).then(doc => {
+    //console.log(doc.documentElement.outerHTML);
+    const dom = doc.querySelector(".hash-event");
+    const event = makeEvent(dom, hub.hashnet.contexts);
+    const siteId = `${event.$event.actor}`;
+    const siteUrl = `${event.$event.target}`;
+    if (hub.siteIds.has(siteId)) {
+      return Promise.reject(Error(`peer already listed: ${siteId}`));
+    }
+    if (siteUrl !== peerUrl) {
+      return Promise.reject(Error(`mismatched url ${peer} says ${siteUrl}`));
+    }
+    return verifyEvent(event).then(event => {
+      hub.siteIds.set(siteId, siteUrl);
+      return siteUrl;
+    }, error => Promise.reject(Error(`Invalid Sign in sitekey`)));
+  });
 }
 
 function spawnAdded(hub, peer) {

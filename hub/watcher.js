@@ -13,8 +13,10 @@ class Watcher {
 }
 
 function watch(watcher) {
+  const myId = `${watcher.hub.me.id}`;
   const channel = watcher.hub.hashnet.makeChannel({
-    $event$contexts: ctxs => ctxs.includes("$peer$added")
+    $event$contexts: ctxs => ctxs.includes("$peer$added"),
+    $event$actor: actor => `${actor}` !== myId,
   });
   channel.pull().then(function loop(added) {
     const peer = String(added.$event$target);

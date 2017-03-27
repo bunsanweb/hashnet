@@ -10,9 +10,10 @@ const zlib = require("zlib");
 const jsdom = require("jsdom");
 
 class Web {
-  constructor(publisher) {
+  constructor(publisher, sitekey) {
     this.publisher = publisher;
-    const handler = new WebHandler(this.publisher);
+    this.sitekey = sitekey;
+    const handler = new WebHandler(this);
     this.server = http.createServer((req, res) => handler.handle(req, res));
   }
 
@@ -38,11 +39,12 @@ class Web {
 // TBD
 // - /hash/site: site pubkey and actor pubkey and actor sign
 class WebHandler {
-  constructor(publisher) {
-    this.publisher = publisher;
+  constructor(web) {
+    this.web = web;
     this.routes = [
       {method: "handleEvent", pattern: /^\/hash\/event\/([0-9a-f]{64})$/},
       {method: "handleItems", pattern: /^\/hash\/items\/([0-9a-f]{64})?$/},
+      {method: "handleSiteKey", pattern: /^\/hash\/sitekey$/},
     ];
   }
 
@@ -56,7 +58,7 @@ class WebHandler {
 
   handleEvent(req, res, match) {
     const id = match[1];
-    const dom = this.publisher.get(id);
+    const dom = this.web.publisher.get(id);
     if (!dom) return this.handleNotFound(req, res);
 
     const timestamp = new Date(
@@ -69,9 +71,9 @@ class WebHandler {
   }
 
   handleItems(req, res, match) {
-    const ids = this.publisher.list(match[1]);
+    const ids = this.web.publisher.list(match[1]);
     const timestamp = ids.length === 0 ? new Date() : new Date(
-      this.publisher.get(ids.slice(-1)[0]).
+      this.web.publisher.get(ids.slice(-1)[0]).
         querySelector(".event-timestamp").textContent);
 
     const doc = jsdom.jsdom(`<html><head><head><body>
@@ -99,6 +101,15 @@ class WebHandler {
     return this.sendDoc(req, res, doc, timestamp);
   }
 
+  handleSiteKey(req,res) {
+    const timestamp = new Date();
+    this.web.sitekey.selfSigned(req.headers.host, timestamp).then(event => {
+      const doc = jsdom.jsdom();
+      doc.body.appendChild(doc.importNode(event.$$.dom, true));
+      return this.sendDoc(req, res, doc, timestamp);
+    }).catch(error => this.handleServerError(req, res, error));
+  }
+
   handleNotFound(req, res) {
     res.writeHead(404);
     res.end(`Not Found: ${req.path}`);
@@ -106,6 +117,11 @@ class WebHandler {
   handleBadRequest(req, res, reason="") {
     res.writeHead(400);
     res.end(`Bad Request: ${reason}`);
+  }
+  handleServerError(req, res, error) {
+    console.error(req.url, req.headers, error);
+    res.writeHead(500);
+    res.end(`Not Found: ${req.path}`);
   }
 
   sendDoc(req, res, doc, timestamp, etag) {
