@@ -6,8 +6,11 @@ module.exports = Object.freeze(Object.create(null, {
 }));
 
 const http = require("http");
+const {URL} = require("url");
 const zlib = require("zlib");
 const jsdom = require("jsdom");
+const {fetchDom} = require("../util/dom");
+const {checkAttending} = require("./attending");
 
 class Web {
   constructor(publisher, sitekey) {
@@ -45,6 +48,7 @@ class WebHandler {
       {method: "handleEvent", pattern: /^\/hash\/event\/([0-9a-f]{64})$/},
       {method: "handleItems", pattern: /^\/hash\/items\/([0-9a-f]{64})?$/},
       {method: "handleSiteKey", pattern: /^\/hash\/sitekey$/},
+      {method: "handleAttending", pattern: /^\/hash\/attending$/},
     ];
   }
 
@@ -71,6 +75,7 @@ class WebHandler {
   }
 
   handleItems(req, res, match) {
+    // TBD: 304 not modified when "if-none-match" value == eventId
     const ids = this.web.publisher.list(match[1]);
     const timestamp = ids.length === 0 ? new Date() : new Date(
       this.web.publisher.get(ids.slice(-1)[0]).
@@ -101,13 +106,25 @@ class WebHandler {
     return this.sendDoc(req, res, doc, timestamp);
   }
 
-  handleSiteKey(req,res) {
+  handleSiteKey(req, res) {
     const timestamp = new Date();
     this.web.sitekey.selfSigned(req.headers.host, timestamp).then(event => {
       const doc = jsdom.jsdom();
       doc.body.appendChild(doc.importNode(event.$$.dom, true));
       return this.sendDoc(req, res, doc, timestamp);
     }).catch(error => this.handleServerError(req, res, error));
+  }
+
+  handleAttending(req, res) {
+    const {host, referer} = req.headers;
+    checkAttending(this.web.sitekey, host, referer).
+      then(peerUrl => this.web.sitekey.makeAttendedEvent(peerUrl)).
+      then(event => this.web.publisher.putInside(event.$$.dom)).
+      then(eventId => {
+        const loc = new URL(`http://${host}/hash/event/${eventId}`);
+        res.writeHead(201, {location: loc.href});
+        res.end();
+      }).catch(err => this.handleServerError(req, res, err));
   }
 
   handleNotFound(req, res) {

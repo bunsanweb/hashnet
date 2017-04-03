@@ -16,7 +16,7 @@ const {URL} = require("url");
 const {epochContexts, assignContext} = require("../context/def");
 const {calcEventId} = require("../context/event");
 const {Me} = require("../hash/me");
-const {makeEvent} = require("../hash/event");
+const {makeEvent, verifyEvent} = require("../hash/event");
 const {eventDom} = require("../util/dom");
 
 class SiteKey {
@@ -29,8 +29,14 @@ class SiteKey {
     return this.me.id;
   }
 
+  verifyEvent(event) {
+    return verifyEvent(event);
+  }
+  makeEvent(dom) {
+    return makeEvent(dom, this.contexts);
+  }
+
   selfSigned(host, timestamp = new Date()) {
-    // use event format
     const dom = eventDom(`<h1>Site Key</h1>`);
     const $event = {
       actor: this.me.id,
@@ -41,6 +47,40 @@ class SiteKey {
     };
     assignContext(dom, this.contexts.$event, $event);
     assignContext(dom, this.contexts.$event, {id: calcEventId(dom)});
-    return this.me.sign(makeEvent(dom, this.contexts));
+    return this.me.sign(this.makeEvent(dom));
+  }
+
+  makeAttendedEvent(host, timestamp = new Date()) {
+    const dom = eventDom(`<h1>Attended</h1>`);
+    const $event = {
+      actor: this.me.id,
+      target: new URL(`http://${host}/`),
+      action: "attended",
+      timestamp,
+      contexts: ["$peer$attended"],
+    };
+    assignContext(dom, this.contexts.$event, $event);
+    assignContext(dom, this.contexts.$event, {id: calcEventId(dom)});
+    return this.me.sign(this.makeEvent(dom));
+  }
+
+  makeAttendingEvent(brokerHost, selfUrl, timestamp = new Date()) {
+    const dom = eventDom(`
+      <h1>Attending</h1>
+      <div>broker:<span class="peer-broker"></span></div>`);
+    const $event = {
+      actor: this.me.id,
+      target: new URL(selfUrl),
+      action: "attending",
+      timestamp,
+      contexts: ["$peer$attending"],
+    };
+    assignContext(dom, this.contexts.$event, $event);
+    const $peer$attending = {
+      broker: brokerHost,
+    };
+    assignContext(dom, this.contexts.$peer$attending, $peer$attending);
+    assignContext(dom, this.contexts.$event, {id: calcEventId(dom)});
+    return this.me.sign(this.makeEvent(dom));
   }
 }

@@ -83,6 +83,17 @@ const initialContexts = {
   // hashnet peer management events
   $peer$added: [
   ],
+  $peer$attended: [
+  ],
+  $peer$attending: [
+    {
+      label: "broker",
+      selector: ".peer-broker",
+      value: "textContent",
+      type: "string",
+      default: "",
+    },
+  ],
   // application context example
   linklabel: [
     {

@@ -31,6 +31,13 @@ class Publisher {
     }, err => Promise.reject(Error("Invalid Sign for my owners")));
   }
 
+  putInside(eventDom) {
+    const eventId = eventDom.id;
+    this.events.set(eventId, eventDom);
+    this.arrived.push(eventId);
+    return eventId;
+  }
+
   get(eventId) {
     //return event dom
     return this.events.get(eventId);

@@ -2,17 +2,22 @@
 
 module.exports = Object.freeze(Object.create(null, {
   __esModule: {value: true}, [Symbol.toStringTag]: {value: "Module"},
+  Request: {enumerable: true, get: () => Request},
+  Headers: {enumerable: true, get: () => Headers},
+  fetch: {enumerable: true, get: () => fetch},
   fetchDom: {enumerable: true, get: () => fetchDom},
   eventDom: {enumerable: true, get: () => eventDom},
 }));
 
 const fetch = require("node-fetch");
+const {Request, Headers} = fetch;
 const jsdom = require("jsdom");
 
-function fetchDom(urlText) {
-  return fetch(urlText).
+function fetchDom(req) {
+  if (typeof req === "string") req = new Request(req);
+  return fetch(req).
     then(res => res.ok ? res.text() : Promise.reject(res)).
-    then(src => jsdom.jsdom(src, {url: urlText}));
+    then(src => jsdom.jsdom(src, {url: req.url}));
 }
 
 function eventDom(bodyText) {

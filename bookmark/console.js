@@ -9,6 +9,7 @@ const {Me} = require("../hash/me");
 const {Publisher} = require("../site/publisher");
 const {SiteKey} = require("../site/sitekey");
 const {Sync} = require("../site/sync");
+const {Attending} = require("../site/attending");
 const {Web} = require("../site/web");
 const {Hub} = require("../hub/core");
 const {Watcher} = require("../hub/watcher");
@@ -30,6 +31,7 @@ function main() {
   const bookmark = new Bookmark(hashnet, me, argv.nickname);
   const publisher = new Publisher(me.pubkey);
   const sitekey = new SiteKey();
+  const attending = new Attending(sitekey, publisher);
   const web = new Web(publisher, sitekey);
   const sync = new Sync(hashnet, me, publisher);
   const hub = new Hub(hashnet, me);
@@ -38,7 +40,7 @@ function main() {
   const watcher = new Watcher(hub);
 
   web.start();
-  makeConsole({hub, publisher, web, bookmark});
+  makeConsole({hub, publisher, attending, web, bookmark});
 }
 
 main();
