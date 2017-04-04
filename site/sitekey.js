@@ -50,11 +50,11 @@ class SiteKey {
     return this.me.sign(this.makeEvent(dom));
   }
 
-  makeAttendedEvent(host, timestamp = new Date()) {
+  makeAttendedEvent(peerUrl, timestamp = new Date()) {
     const dom = eventDom(`<h1>Attended</h1>`);
     const $event = {
       actor: this.me.id,
-      target: new URL(`http://${host}/`),
+      target: new URL(peerUrl),
       action: "attended",
       timestamp,
       contexts: ["$site", "$peer$attended"],
