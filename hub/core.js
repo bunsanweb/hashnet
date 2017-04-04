@@ -49,10 +49,11 @@ class Hub {
       //console.log(doc.documentElement.outerHTML);
       const ids = Array.from(
         doc.querySelectorAll(".hash-item"), item => item.textContent);
+      //console.log(`${ids.length} items: ${urlText}`);
       if (ids.length === 0) return lastId;
 
       const stopIndex = ids.findIndex(id => id === stopId);
-      const idsFromStop = stopIndex < 0 ? ids : ids.slice(stopIndex + 1);
+      const idsFromStop = stopIndex < 0 ? ids : ids.slice(0, stopIndex);
       const fetchingIds = idsFromStop.filter(id => !this.hashnet.has(id));
       return Promise.all(fetchingIds.map(id => this.pullItem(peer, id))).
         then(() => {
