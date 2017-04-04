@@ -80,11 +80,12 @@ const initialContexts = {
       default: "",
     },
   ],
+  // site spawn event: sync ignores them
+  $site: [],
+  $sitekey: [],
   // hashnet peer management events
-  $peer$added: [
-  ],
-  $peer$attended: [
-  ],
+  $peer$added: [],
+  $peer$attended: [],
   $peer$attending: [
     {
       label: "broker",

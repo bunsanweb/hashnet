@@ -43,7 +43,7 @@ class SiteKey {
       target: new URL(`http://${host}/`),
       action: "published",
       timestamp,
-      contexts: ["$sitekey"],
+      contexts: ["$site", "$sitekey"],
     };
     assignContext(dom, this.contexts.$event, $event);
     assignContext(dom, this.contexts.$event, {id: calcEventId(dom)});
@@ -57,7 +57,7 @@ class SiteKey {
       target: new URL(`http://${host}/`),
       action: "attended",
       timestamp,
-      contexts: ["$peer$attended"],
+      contexts: ["$site", "$peer$attended"],
     };
     assignContext(dom, this.contexts.$event, $event);
     assignContext(dom, this.contexts.$event, {id: calcEventId(dom)});
@@ -73,7 +73,7 @@ class SiteKey {
       target: new URL(selfUrl),
       action: "attending",
       timestamp,
-      contexts: ["$peer$attending"],
+      contexts: ["$site", "$peer$attending"],
     };
     assignContext(dom, this.contexts.$event, $event);
     const $peer$attending = {

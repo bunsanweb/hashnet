@@ -15,7 +15,9 @@ class Sync {
 }
 
 function subpub(sync) {
-  const channel = sync.hashnet.makeChannel({});
+  const channel = sync.hashnet.makeChannel({
+    $event$contexts: ctxs => !ctxs.includes("$site"),
+  });
   channel.pull().then(function loop(event) {
     const dom = event.$$.dom;
     sync.me.signText(dom.outerHTML).
