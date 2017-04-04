@@ -32,6 +32,9 @@ function watch(fullmesh, peer, conf) {
     const next = last === conf.last ? conf.msec * 2 : conf.msec / 2;
     const msec = Math.min(Math.max(fullmesh.minMsec, next), fullmesh.maxMsec);
     return watch(fullmesh, peer, {last, msec});
+  }).catch(err => {
+    //TBD: fetch error: peer may be closed, to do something?
+    console.error("ignored", err);
   });
 }
 
