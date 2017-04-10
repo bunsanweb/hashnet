@@ -4,9 +4,12 @@
 // $ npm install electron
 // $ ./node_modules/.bin/electron .
 
+const os = require("os");
 const {URL} = require("url");
-const {app, globalShortcut, nativeImage, Tray, Menu, BrowserWindow} =
-      require("electron");
+const {
+  app, clipboard, globalShortcut, nativeImage,
+  BrowserWindow, Menu, MenuItem, Tray,
+} = require("electron");
 
 const {captureUrl} = require("./capture/index");
 const {boot} = require("../boot");
@@ -17,6 +20,7 @@ let top = {}; // prevent gc to keep windows
 // TBD: use stored config
 const env = boot({});
 
+if (app.dock) app.dock.hide();
 app.once("ready", ev => {
   // hidden notification window
   top.notify = new BrowserWindow({show: false});
@@ -32,16 +36,8 @@ app.once("ready", ev => {
 
   // tray
   top.tray = new Tray(nativeImage.createEmpty());
-  const menu = Menu.buildFromTemplate([
-    {
-      label: "Share URL (\u{2318}\u{21e7}B)",
-      click: (item, window, event) => {
-        captureToPost();
-      },
-    },
-    {type: "separator"},
-    {role: "quit"}, // "role": system prepared action menu
-  ]);
+  const menuTemplate = buildMenuTemplate();
+  const menu = Menu.buildFromTemplate(menuTemplate);
   top.tray.setToolTip("Share Chrome URL");
   top.tray.setContextMenu(menu);
 
@@ -70,4 +66,39 @@ function captureToPost() {
   captureUrl().then(result => {
     env.bookmark.post(result.url);
   }, err => null);
+}
+
+function buildMenuTemplate() {
+  const port = env.web.address.port;
+  const ifs = os.networkInterfaces();
+  const ifouts = [].concat(...Object.keys(ifs).map(name => ifs[name].map(
+    ifd => Object.assign({name}, ifd)))).filter(
+      ifd => !ifd.internal && ifd.family === "IPv4"); //TBD: IPv6
+  const hostnames = ifouts.map(ifd => {
+    const urlAddr = ifd.family === "IPv6" ? `[${ifd.address}]`: ifd.address;
+    const urlText = `http://${urlAddr}:${port}/`;
+    return {
+      label: `${ifd.name}: ${urlText}`,
+      click: () => {
+        clipboard.writeText(urlText);
+      },
+    };
+  });
+
+  return [
+    {
+      label: "Share URL",
+      accelerator: "CmdOrCtrl+Shift+B",
+      click: (item, window, event) => {
+        captureToPost();
+      },
+    },
+    {type: "separator"},
+    {
+      label: "Copy My hostname",
+      submenu: hostnames,
+    },
+    {type: "separator"},
+    {role: "quit"}, // "role": system prepared action menu
+  ];
 }
