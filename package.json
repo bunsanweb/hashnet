@@ -11,9 +11,14 @@
     "jsdom": "*",
     "node-fetch": "*",
     "node-forge": "*",
-    "yargs": "*"
+    "yargs": "*",
+    "electron": "*"
   },
   "devDependencies": {
+  },
+  "scripts": {
+    "console": "node bookmark/console",
+    "tray": "electron bookmark/tray"
   },
   "repository": {
   }

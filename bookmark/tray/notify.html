@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf8"/>
+    <script defer="defer">
+      "use strict";
+      
+      const {ipcRenderer, shell} = require("electron");
+        ipcRenderer.on("notify", (event, data) => {
+        const notify = new Notification(data.url, {
+          body: `bookmarked by "${data.nickname}"(${data.hash})`,
+        });
+        notify.addEventListener("click", ev => {
+          shell.openExternal(data.url);
+        }, false);
+      });
+</script>
+  </head>
+  <body>
+  </body>
+</html>
