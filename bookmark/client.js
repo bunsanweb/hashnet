@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = Object.freeze(Object.create(null, {
-  __esModule: {value: true}, [Symbol.toStringTag]: {value: true},
+  __esModule: {value: true}, [Symbol.toStringTag]: {value: "Module"},
   Bookmark: {enumerable: true, get: () => Bookmark},
 }));
 
@@ -11,12 +11,14 @@ module.exports = Object.freeze(Object.create(null, {
 // - post my bookmark
 
 // bookmark with me
+const EventEmitter = require("events");
 const {URL} = require("url");
 const {eventDom} = require("../util/dom");
 
 //export
-class Bookmark {
+class Bookmark extends EventEmitter {
   constructor(hashnet, me, nickname = "anonim") {
+    super();
     this.hashnet = hashnet;
     this.me = me;
     this.nickname = nickname;
@@ -50,7 +52,7 @@ class Bookmark {
 
     const event = this.hashnet.makeEvent(dom, attrs);
     this.me.sign(event).then(signed => this.hashnet.put(signed)).
-      catch(console.log);
+      catch(error => this.emit("error", error));
   }
 
   query(url) {
@@ -67,7 +69,7 @@ function watch(bookmark) {
     const url = String(bk.$event$target);
     if (!bookmark.urls.has(url)) bookmark.urls.set(url, []);
     bookmark.urls.get(url).push(bk);
-    console.log(`${bk.$event$target} bookmarked by ${bk.$event$actor}`);
+    bookmark.emit("arrived", bk);
     return channel.pull().then(loop);
   });
 }
