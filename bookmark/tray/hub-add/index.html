@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="script.js"></script>
+    <style>
+      main {
+        width: 90vw;
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0px;
+        padding: 0px;
+        background-color: hsla(0, 5%, 75%, 0.7);
+        border-radius: 5vw / 5vw;
+      }
+      h1 {
+        font-family: sanserif;
+        font-size: 4vw;
+        height: 20vh;
+      }
+      input {
+        font-size: 4vw;
+        width: 75vw;
+        height: 20vh;
+      }
+      input:required:invalid {
+        background-color: lightgray;
+      }
+      input:required:invalid + span::before {
+        width: 5vw;
+        font-size: 4vw;
+        content: "❌"
+      }
+      input:required:valid {
+        background-color: lightgreen;
+      }
+      input:required:valid + span::before {
+        width: 5vw;
+        font-size: 4vw;
+        content: "✅"
+      }
+      button {
+        width: 40vw;
+        height: 20vh;
+        border: none;
+        font-size: 4vw;
+      }
+      button:hover {
+        border: solid;
+      }
+      button:active {
+        box-shadow: inset 0vw 0vh 1vw 1vh hsla(0, 0%, 25%, 0.5);
+      }
+      button.ok {
+        background-color: hsl(120, 50%, 50%);
+      }
+    </style>
+  </head>
+  <body>
+    <form>
+    <main>
+      <h1>Add Subscribing Peer</h1>
+      <div>
+        <input id="url" type="url" required="required" autofocus="autofocus"
+               pattern="^http://(.+):\d{3,5}/$"
+               title="'http://' and PORT number and the last '/' required"
+               placeholder="Peer URL(e.g. http://192.168.10.20:58476/)"/>
+        <span></span>
+      </div>
+      <div>
+        <button id="ok" class="ok">Add</button>
+        <button id="cancel" class="cancel">Cancel</button>
+      </div>
+    </main>
+    </form>
+  </body>
+</html>

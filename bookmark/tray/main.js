@@ -13,7 +13,7 @@ const {
 const {hostInterfaces} = require("../../util/net");
 const {boot} = require("../boot");
 const {captureUrl} = require("./capture/index");
-
+const {DialogMain} = require("./dialog");
 
 let top = {}; // prevent gc to keep windows
 
@@ -25,6 +25,7 @@ app.once("ready", ev => {
   // hidden notification window
   top.notify = new BrowserWindow({show: false});
   top.notify.loadURL(`${new URL(`file:${__dirname}/notify.html`)}`);
+  top.dialog = new DialogMain();
 
   // spawn url as system notification
   env.bookmark.on("arrived", bk => {
@@ -67,6 +68,13 @@ function captureToPost() {
     env.bookmark.post(result.url);
   }, err => null);
 }
+function addSubscribingPeer() {
+  const src = `file://${__dirname}/hub-add/index.html`;
+  const {x, y} = top.tray.getBounds();
+  top.dialog.open(src, {x, y, width: 400, height: 200}).
+    then(result => env.hub.add(result.url), error => {});
+}
+
 
 function buildMenuTemplate() {
   const port = env.web.address.port;
@@ -95,6 +103,18 @@ function buildMenuTemplate() {
     {
       label: "Copy My hostname",
       submenu: hostnames,
+    },
+    {type: "separator"},
+    {
+      label: "Network",
+      submenu: [
+        {
+          label: "Add Subscribing Peer",
+          click: (item, window, event) => {
+            addSubscribingPeer();
+          },
+        }
+      ],
     },
     {type: "separator"},
     {role: "quit"}, // "role": system prepared action menu
