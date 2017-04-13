@@ -4,15 +4,15 @@
 // $ npm install electron
 // $ ./node_modules/.bin/electron .
 
-const os = require("os");
 const {URL} = require("url");
 const {
   app, clipboard, globalShortcut, nativeImage,
   BrowserWindow, Menu, MenuItem, Tray,
 } = require("electron");
 
-const {captureUrl} = require("./capture/index");
+const {hostInterfaces} = require("../../util/net");
 const {boot} = require("../boot");
+const {captureUrl} = require("./capture/index");
 
 
 let top = {}; // prevent gc to keep windows
@@ -70,10 +70,8 @@ function captureToPost() {
 
 function buildMenuTemplate() {
   const port = env.web.address.port;
-  const ifs = os.networkInterfaces();
-  const ifouts = [].concat(...Object.keys(ifs).map(name => ifs[name].map(
-    ifd => Object.assign({name}, ifd)))).filter(
-      ifd => !ifd.internal && ifd.family === "IPv4"); //TBD: IPv6
+  const ifouts = hostInterfaces().filter(
+    ifd => !ifd.internal && ifd.family === "IPv4"); //TBD: IPv6
   const hostnames = ifouts.map(ifd => {
     const urlAddr = ifd.family === "IPv6" ? `[${ifd.address}]`: ifd.address;
     const urlText = `http://${urlAddr}:${port}/`;

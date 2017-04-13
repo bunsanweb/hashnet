@@ -10,6 +10,7 @@ const {URL} = require("url");
 const zlib = require("zlib");
 const jsdom = require("jsdom");
 const {fetchDom} = require("../util/dom");
+const {hostAddresses} = require("../util/net");
 const {checkAttending} = require("./attending");
 
 class Web {
@@ -20,7 +21,7 @@ class Web {
     this.server = http.createServer((req, res) => handler.handle(req, res));
   }
 
-  peer(host = "localhost") {
+  peer(host = hostAddresses()[0]) {
     return `http://${host}:${this.address.port}/`;
   }
   get address() {
