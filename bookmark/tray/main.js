@@ -10,7 +10,7 @@ const {
   BrowserWindow, Menu, MenuItem, Tray,
 } = require("electron");
 
-const {hostInterfaces} = require("../../util/net");
+const {hostInterfaces, hostAddresses} = require("../../util/net");
 const {boot} = require("../boot");
 const {captureUrl} = require("./capture/index");
 const {DialogMain} = require("./dialog");
@@ -63,6 +63,7 @@ app.on("before-quit", ev => {
   globalShortcut.unregisterAll();
 });
 
+// actions
 function captureToPost() {
   captureUrl().then(result => {
     env.bookmark.post(result.url);
@@ -74,8 +75,15 @@ function addSubscribingPeer() {
   top.dialog.open(src, {x, y, width: 400, height: 200}).
     then(result => env.hub.add(result.url), error => {});
 }
+function requestAttendingNetwork() {
+  const src = `file://${__dirname}/attending-request/index.html`;
+  const meList = hostAddresses();
+  const {x, y} = top.tray.getBounds();
+  top.dialog.open(src, {x, y, width: 400, height: 300}, {meList}).
+    then(result => env.attending.request(result.peer, result.me), error => {});
+}
 
-
+// menu
 function buildMenuTemplate() {
   const port = env.web.address.port;
   const ifouts = hostInterfaces().filter(
@@ -113,7 +121,13 @@ function buildMenuTemplate() {
           click: (item, window, event) => {
             addSubscribingPeer();
           },
-        }
+        },
+        {
+          label: "Request Attending Network",
+          click: (item, window, event) => {
+            requestAttendingNetwork();
+          },
+        },
       ],
     },
     {type: "separator"},
