@@ -69,6 +69,15 @@ function captureToPost() {
     env.bookmark.post(result.url);
   }, err => null);
 }
+function updateNickname() {
+  const src = `file://${__dirname}/nickname/index.html`;
+  const nickname = env.bookmark.nickname;
+  const {x, y} = top.tray.getBounds();
+  top.dialog.open(src, {x, y, width: 400, height: 200}, {nickname}).
+    then(result => {
+      env.bookmark.nickname = result.nickname;
+    }, error => {});
+}
 function addSubscribingPeer() {
   const src = `file://${__dirname}/hub-add/index.html`;
   const {x, y} = top.tray.getBounds();
@@ -103,30 +112,28 @@ function buildMenuTemplate() {
     {
       label: "Share URL",
       accelerator: "CmdOrCtrl+Shift+B",
-      click: (item, window, event) => {
-        captureToPost();
-      },
-    },
-    {type: "separator"},
-    {
-      label: "Copy My hostname",
-      submenu: hostnames,
+      click: captureToPost,
     },
     {type: "separator"},
     {
       label: "Network",
       submenu: [
         {
+          label: "Nickname",
+          click: updateNickname,
+        },
+        {
           label: "Add Subscribing Peer",
-          click: (item, window, event) => {
-            addSubscribingPeer();
-          },
+          click: addSubscribingPeer,
         },
         {
           label: "Request Attending Network",
-          click: (item, window, event) => {
-            requestAttendingNetwork();
-          },
+          click: requestAttendingNetwork,
+        },
+        {type: "separator"},
+        {
+          label: "Copy My hostname",
+          submenu: hostnames,
         },
       ],
     },
