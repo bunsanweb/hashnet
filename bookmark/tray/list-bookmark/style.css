@@ -1,0 +1,13 @@
+main > div#bookmarks {
+    height: 165vw;
+    floe-grow: 1;
+    overflow-y: scroll;
+}
+
+div#bookmarks > iframe {
+    background-color: hsla(0, 50%, 95%, 0.75);
+    font-size: 1vw;
+    display: block;
+    width: 95%;
+    height: 35vw;
+}

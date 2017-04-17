@@ -5,6 +5,7 @@
 // $ ./node_modules/.bin/electron .
 
 const {URL} = require("url");
+const electron = require("electron");
 const {
   app, clipboard, globalShortcut, nativeImage,
   BrowserWindow, Menu, MenuItem, Tray,
@@ -43,9 +44,8 @@ app.once("ready", ev => {
   top.tray.setContextMenu(menu);
 
   // shortcut command
-  globalShortcut.register("CmdOrCtrl+Shift+B", () => {
-    captureToPost();
-  });
+  globalShortcut.register("CmdOrCtrl+Shift+B", captureToPost);
+  globalShortcut.register("CmdOrCtrl+Shift+L", listURLBookmarks);
 
   // Option: some animated web site to tray icon image
   // see: https://electron.atom.io/docs/tutorial/offscreen-rendering/
@@ -63,32 +63,49 @@ app.on("before-quit", ev => {
   globalShortcut.unregisterAll();
 });
 
+
+// tray dialog bounds: its width relative to the screen width
+function trayDialogBounds(heightRate) {
+  //NOTE: cannot access screen before app "ready"
+  const screenWidth = electron.screen.getPrimaryDisplay().workAreaSize.width;
+  const width = Math.round(screenWidth * 0.15);
+  const height = Math.round(screenWidth * 0.15 * heightRate);
+  const {x, y} = top.tray.getBounds();
+  return {x, y, width, height};
+}
+
 // actions
 function captureToPost() {
   captureUrl().then(result => {
     env.bookmark.post(result.url);
   }, err => null);
 }
+function listURLBookmarks() {
+  const src = `file://${__dirname}/list-bookmark/index.html`;
+  captureUrl().then(result => {
+    const url = result.url;
+    const bookmarks = env.bookmark.query(url).map(ev => ev.$$.dom.outerHTML);
+    top.dialog.open(src, trayDialogBounds(2), {url, bookmarks}).
+      then(result => {}, error => {});
+  }, err => null);
+}
 function updateNickname() {
   const src = `file://${__dirname}/nickname/index.html`;
   const nickname = env.bookmark.nickname;
-  const {x, y} = top.tray.getBounds();
-  top.dialog.open(src, {x, y, width: 400, height: 200}, {nickname}).
+  top.dialog.open(src, trayDialogBounds(0.5), {nickname}).
     then(result => {
       env.bookmark.nickname = result.nickname;
     }, error => {});
 }
 function addSubscribingPeer() {
   const src = `file://${__dirname}/hub-add/index.html`;
-  const {x, y} = top.tray.getBounds();
-  top.dialog.open(src, {x, y, width: 400, height: 200}).
+  top.dialog.open(src, trayDialogBounds(0.5)).
     then(result => env.hub.add(result.url), error => {});
 }
 function requestAttendingNetwork() {
   const src = `file://${__dirname}/attending-request/index.html`;
   const meList = hostAddresses();
-  const {x, y} = top.tray.getBounds();
-  top.dialog.open(src, {x, y, width: 400, height: 300}, {meList}).
+  top.dialog.open(src, trayDialogBounds(0.75), {meList}).
     then(result => env.attending.request(result.peer, result.me), error => {});
 }
 
@@ -113,6 +130,11 @@ function buildMenuTemplate() {
       label: "Share URL",
       accelerator: "CmdOrCtrl+Shift+B",
       click: captureToPost,
+    },
+    {
+      label: "List URL Bookmark",
+      accelerator: "CmdOrCtrl+Shift+L",
+      click: listURLBookmarks,
     },
     {type: "separator"},
     {
