@@ -1,9 +1,10 @@
 "use strict";
 
 module.exports = Object.freeze(Object.create(null, {
-    __esModule: {value: true}, [Symbol.toStringTag]: {value: "Module"},
-    DialogMain: {enumerable: true, get: () => DialogMain},
-    DialogRenderer: {enumerable: true, get: () => DialogRenderer},
+  __esModule: {value: true}, [Symbol.toStringTag]: {value: "Module"},
+  DialogMain: {enumerable: true, get: () => DialogMain},
+  DialogRenderer: {enumerable: true, get: () => DialogRenderer},
+  popupDataList: {enumerable: true, get: () => popupDataList},
 }));
 
 
@@ -72,4 +73,23 @@ class DialogRenderer {
     this.ipcRenderer.send(this.channelName, {isError: true, error});
     this.ipcRenderer = null;
   }
+}
+
+//export
+function popupDataList() {
+  const {Menu} = require("electron").remote;
+  Array.from(document.querySelectorAll("input[list]")).forEach(input => {
+    input.addEventListener("click", (ev) => {
+      const {width, height} = ev.target.getBoundingClientRect();
+      if (ev.offsetX < width - height) return;
+      const dataList = document.getElementById(ev.target.getAttribute("list"));
+      if (!dataList) return;
+      const menu = Array.from(dataList.querySelectorAll("option"), opt => ({
+        label: opt.value,
+        click() {ev.target.value = opt.value;},
+      }));
+      const popup = Menu.buildFromTemplate(menu);
+      popup.popup();
+    }, false);
+  });
 }

@@ -1,7 +1,7 @@
 "use strict";
 
 window.addEventListener("load", ev => {
-  const {DialogRenderer} = require("../dialog");
+  const {DialogRenderer, popupDataList} = require("../dialog");
   const peer = document.getElementById("peer");
   const me = document.getElementById("me");
   const meList = document.getElementById("me-list");
@@ -12,6 +12,8 @@ window.addEventListener("load", ev => {
       meList.appendChild(option);
     });
   });
+  popupDataList();
+
   document.getElementById("ok").addEventListener("click", () => {
     if (!peer.validity.valid || !me.validity.valid) return;
     try {

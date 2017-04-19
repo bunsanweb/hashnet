@@ -104,7 +104,8 @@ function addSubscribingPeer() {
 }
 function requestAttendingNetwork() {
   const src = `file://${__dirname}/attending-request/index.html`;
-  const meList = hostAddresses();
+  const port = env.web.address.port;
+  const meList = hostAddresses().map(host => `http://${host}:${port}/`);
   top.dialog.open(src, trayDialogBounds(0.75), {meList}).
     then(result => env.attending.request(result.peer, result.me), error => {});
 }
