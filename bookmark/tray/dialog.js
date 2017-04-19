@@ -4,7 +4,7 @@ module.exports = Object.freeze(Object.create(null, {
   __esModule: {value: true}, [Symbol.toStringTag]: {value: "Module"},
   DialogMain: {enumerable: true, get: () => DialogMain},
   DialogRenderer: {enumerable: true, get: () => DialogRenderer},
-  popupDataList: {enumerable: true, get: () => popupDataList},
+  injectInputListPopup: {enumerable: true, get: () => injectInputListPopup},
 }));
 
 
@@ -75,21 +75,31 @@ class DialogRenderer {
   }
 }
 
+
+// use single listener function instance for addEventListener() several times
+function popupListener(ev) {
+  const {Menu, getCurrentWindow} = require("electron").remote;
+  const {left, bottom, width, height} = ev.target.getBoundingClientRect();
+  // popup only in right square
+  if (ev.offsetX < width - height) return;
+  const dl = document.getElementById(ev.target.getAttribute("list"));
+  if (!dl || dl.tagName.toLowerCase() !== "datalist") return;
+  const menu = Array.from(dl.querySelectorAll("option"), opt => ({
+    label: opt.value,
+    click() {ev.target.value = opt.value;},
+  }));
+  const popup = Menu.buildFromTemplate(menu);
+  try {
+    // sometimes error raised when popup with options
+    popup.popup(getCurrentWindow(), {x: left, y: bottom, async: false});
+  } catch (err) {
+    popup.popup();
+  }
+}
+
 //export
-function popupDataList() {
-  const {Menu} = require("electron").remote;
+function injectInputListPopup() {
   Array.from(document.querySelectorAll("input[list]")).forEach(input => {
-    input.addEventListener("click", (ev) => {
-      const {width, height} = ev.target.getBoundingClientRect();
-      if (ev.offsetX < width - height) return;
-      const dataList = document.getElementById(ev.target.getAttribute("list"));
-      if (!dataList) return;
-      const menu = Array.from(dataList.querySelectorAll("option"), opt => ({
-        label: opt.value,
-        click() {ev.target.value = opt.value;},
-      }));
-      const popup = Menu.buildFromTemplate(menu);
-      popup.popup();
-    }, false);
+    input.addEventListener("click", popupListener, false);
   });
 }

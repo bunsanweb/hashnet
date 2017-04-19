@@ -1,7 +1,7 @@
 "use strict";
 
 window.addEventListener("load", ev => {
-  const {DialogRenderer, popupDataList} = require("../dialog");
+  const {DialogRenderer, injectInputListPopup} = require("../dialog");
   const peer = document.getElementById("peer");
   const me = document.getElementById("me");
   const meList = document.getElementById("me-list");
@@ -12,7 +12,6 @@ window.addEventListener("load", ev => {
       meList.appendChild(option);
     });
   });
-  popupDataList();
 
   document.getElementById("ok").addEventListener("click", () => {
     if (!peer.validity.valid || !me.validity.valid) return;
@@ -25,4 +24,6 @@ window.addEventListener("load", ev => {
   document.getElementById("cancel").addEventListener("click", () => {
     dialog.reject({canceled: true});
   }, false);
+
+  injectInputListPopup();
 }, false);
