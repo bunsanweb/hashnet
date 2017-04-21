@@ -30,7 +30,7 @@ class Hub {
   add(peer) {
     checkSiteKey(this, peer).then(peerUrl => {
       this.peers.push(peerUrl);
-      this.automations.forEach(automation => automation.added(peerUrl));
+      emitAutomations(this, "added", peerUrl);
       spawnAdded(this, peerUrl);
     }).catch(error => {
       //console.log(error);
@@ -63,7 +63,7 @@ class Hub {
           const prev = ids.slice(-1)[0];
           return this.pullItems(peer, stopId, last, prev);
         });
-    });
+    }).catch(error => emitAutomations(this, "troubled", peer));
   }
 
   pullItem(peer, eventId) {
@@ -78,6 +78,14 @@ class Hub {
       return this.hashnet.put(article).then(event => true);
     }).catch(err => false);
   }
+}
+
+function emitAutomations(hub, method, ...args) {
+  hub.automations.forEach(automation => {
+    try {
+      automation[method](...args);
+    } catch (error) {}
+  });
 }
 
 
