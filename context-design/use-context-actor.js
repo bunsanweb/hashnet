@@ -5,13 +5,13 @@ const jsdom = require("jsdom");
 
 const {
   epochContexts, updateContexts,
-} = require("./context/def");
+} = require("../context/def");
 const {
   scanEvent, verifyEventAttrs, calcEventId, assignEventId,
-} = require("./context/event");
+} = require("../context/event");
 const {
   newActor, idFromPubkey, signEvent, verifySign, verifyEvent,
-} = require("./context/actor");
+} = require("../context/actor");
 
 
 // create me

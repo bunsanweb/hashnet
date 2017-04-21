@@ -4,10 +4,10 @@ const jsdom = require("jsdom");
 
 const {
   updateContexts,
-} = require("./context/def");
+} = require("../context/def");
 const {
   scanEvent, verifyEventAttrs, calcEventId, assignEventId,
-} = require("./context/event");
+} = require("../context/event");
 
 const eventDefs = [{
   label: "id",

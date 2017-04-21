@@ -2,8 +2,8 @@
 
 const {URL} = require("url");
 const jsdom = require("jsdom");
-const {HashNet} = require("./hash/net");
-const {Me} = require("./hash/me");
+const {HashNet} = require("../hash/net");
+const {Me} = require("../hash/me");
 
 const hashnet = new HashNet();
 const me = new Me(Buffer.from("cafe4c027decaffe".repeat(4), "hex"));

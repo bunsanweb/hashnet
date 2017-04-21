@@ -4,7 +4,7 @@ const jsdom = require("jsdom");
 
 const {
   epochContexts, updateContexts, scanContext, assignContext,
-} = require("./context/def");
+} = require("../context/def");
 
 const events = jsdom.jsdom(`
 <body>
