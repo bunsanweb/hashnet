@@ -9,11 +9,12 @@ const {URL} = require("url");
 
 // subscribe peers with distance of me id and site id
 class IdDistance {
-  constructor(spanMsec = 2000, bucketSize = 4) {
+  constructor(siteId, spanMsec = 2000, bucketSize = 4) {
     console.assert(bucketSize > 0);
+    this.siteId = siteId;
     this.spanMsec = spanMsec;
     this.bucketSize = bucketSize;
-    this.buckets = Array.from(Array(256 + 1), () => []);
+    this.dists = Array.from(Array(256 + 1), () => []);
     this.lasts = new Map();
   }
 
@@ -25,19 +26,17 @@ class IdDistance {
   }
 
   added(peer) {
-    const dist = distance(this.hub.me.id, asSiteId(this.hub, peer));
-    this.bucket[dist] = [peer].concat(this.bucket[dist]).
-      slice(0, this.bucketSize);
+    const dist = distance(this.siteId, asSiteId(this.hub, peer));
+    this.dists[dist] = this.dists[dist].concat([peer]);
   }
 
   troubled(peer) {
-    const dist = distance(this.hub.me.id, asSiteId(this.hub, peer));
-    const idx = this.bucket[dist].findIndex(peer);
-    if (idx >= 0) this.bucket[dist] = this.bucket[dist].slice(0, idx).concat(
-      this.bucket[dist].slice(idx + 1));
+    const dist = distance(this.siteId, asSiteId(this.hub, peer));
+    this.dists[dist] = this.dists[dist].filter(p => p !== peer);
     this.lasts.delete(peer);
   }
 }
+
 
 function distance(idA, idB) {
   // ID as "hash:xxxxx..." (64 hex)
@@ -63,8 +62,8 @@ function asSiteId(hub, peerUrl) {
 }
 
 function* bucketPeers(iddist) {
-  for (const bucket of iddist.buckets) {
-    for (const peer of bucket) yield peer;
+  for (const peers of iddist.dists) {
+    for (const peer of peers.slice(0, iddist.bucketSize)) yield peer;
   }
 }
 
@@ -72,7 +71,6 @@ function wait(msec, value = null) {
   return new Promise(f => setTimeout(f, msec, value));
 }
 
-// not yet tested
 function watch(iddist) {
   // each time to pull bucket peers
   const next = Date.now() + iddist.spanMsec;

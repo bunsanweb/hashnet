@@ -19,6 +19,7 @@ const {Web} = require("../site/web");
 const {Hub} = require("../hub/core");
 const {Watcher} = require("../hub/watcher");
 const {FullMesh} = require("../hub/fullmesh");
+const {IdDistance} = require("../hub/iddist");
 const {Bookmark} = require("./client");
 
 function boot(argv = {}) {
@@ -32,7 +33,9 @@ function boot(argv = {}) {
   const sync = new Sync(hashnet, me, publisher);
   const hub = new Hub(hashnet, me);
   hub.addMySite(sitekey.id);
-  hub.run(new FullMesh());
+  //hub.run(new FullMesh());
+  const iddist = new IdDistance(sitekey.me.id);
+  hub.run(iddist);
   const watcher = new Watcher(hub);
 
   web.start();
