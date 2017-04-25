@@ -11,17 +11,17 @@ module.exports = Object.freeze(Object.create(null, {
 
 const fetch = require("node-fetch");
 const {Request, Headers} = fetch;
-const jsdom = require("jsdom");
+const {JSDOM} = require("jsdom");
 
 function fetchDom(req) {
   if (typeof req === "string") req = new Request(req);
   return fetch(req).
     then(res => res.ok ? res.text() : Promise.reject(res)).
-    then(src => jsdom.jsdom(src, {url: req.url}));
+    then(src => new JSDOM(src, {url: req.url}).window.document);
 }
 
 function eventDom(bodyText) {
-  return jsdom.jsdom(`<body>
+  return new JSDOM(`<body>
 <article class="hash-event" id="" pubkey="" sign="">
   <div>${bodyText}</div>
   <div>
@@ -32,5 +32,5 @@ function eventDom(bodyText) {
   </div>
   <div>contexts: <span class="event-contexts"></span></div>
 </article>
-</body>`).querySelector("article");
+</body>`).window.document.querySelector("article");
 }

@@ -8,7 +8,7 @@ module.exports = Object.freeze(Object.create(null, {
 const http = require("http");
 const {URL} = require("url");
 const zlib = require("zlib");
-const jsdom = require("jsdom");
+const {JSDOM} = require("jsdom");
 const {fetchDom} = require("../util/dom");
 const {hostAddresses} = require("../util/net");
 const {checkAttending} = require("./attending");
@@ -69,7 +69,7 @@ class WebHandler {
     const timestamp = new Date(
       dom.querySelector(".event-timestamp").textContent);
 
-    const doc = jsdom.jsdom();
+    const doc = new JSDOM().window.document;
     doc.body.appendChild(doc.importNode(dom, true));
 
     return this.sendDoc(req, res, doc, timestamp, id);
@@ -82,10 +82,10 @@ class WebHandler {
       this.web.publisher.get(ids.slice(-1)[0]).
         querySelector(".event-timestamp").textContent);
 
-    const doc = jsdom.jsdom(`<html><head><head><body>
+    const doc = new JSDOM(`<html><head><head><body>
   <h1>hash:events</h1>
   <ul class="hash-items"></ul>
-<body>`);
+<body>`).window.document;
     const ul = doc.querySelector(".hash-items");
     for (const id of ids) {
       const li = doc.createElement("li");
@@ -110,7 +110,7 @@ class WebHandler {
   handleSiteKey(req, res) {
     const timestamp = new Date();
     this.web.sitekey.selfSigned(req.headers.host, timestamp).then(event => {
-      const doc = jsdom.jsdom();
+      const doc = new JSDOM().window.document;
       doc.body.appendChild(doc.importNode(event.$$.dom, true));
       return this.sendDoc(req, res, doc, timestamp);
     }).catch(error => this.handleServerError(req, res, error));

@@ -1,6 +1,6 @@
 "use strict";
 
-const jsdom = require("jsdom");
+const {JSDOM} = require("jsdom");
 
 const {
   updateContexts,
@@ -40,7 +40,7 @@ const eventDefs = [{
   default: "",
 }];
 
-const events = jsdom.jsdom(`
+const events = new JSDOM(`
 <body>
 <article class="hash-event" id="f0f0f0f0">
 <h1><span class="context-label">hash:event</span> defined</h1>
@@ -55,7 +55,7 @@ const events = jsdom.jsdom(`
 <div>contexts: <span class="event-contexts">hash:context-add</span></div>
 </article>
 </body>
-`).querySelectorAll("article.hash-event");
+`).window.document.querySelectorAll("article.hash-event");
 events[0].id = calcEventId(events[0]);
 
 const ctx = updateContexts(events);

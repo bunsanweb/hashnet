@@ -1,12 +1,12 @@
 "use strict";
 
-const jsdom = require("jsdom");
+const {JSDOM} = require("jsdom");
 
 const {
   epochContexts, updateContexts, scanContext, assignContext,
 } = require("../context/def");
 
-const events = jsdom.jsdom(`
+const events = new JSDOM(`
 <body>
 
 <article class="hash-event">
@@ -29,7 +29,7 @@ const events = jsdom.jsdom(`
 <div class="hash-context">$context-added</div>
 </article>
 </body>
-`).querySelectorAll("article.hash-event");
+`).window.document.querySelectorAll("article.hash-event");
 
 const ctx0 = epochContexts();
 const ctx1 = updateContexts(events, ctx0);

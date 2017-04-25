@@ -1,7 +1,7 @@
 "use strict";
 
 const {URL} = require("url");
-const jsdom = require("jsdom");
+const {JSDOM} = require("jsdom");
 const {HashNet} = require("../hash/net");
 const {Me} = require("../hash/me");
 
@@ -45,7 +45,7 @@ console.log(event1.$$.dom.outerHTML);
 me.sign(event1).then(signed => hashnet.put(signed)).catch(console.error);
 
 function rawEventDOM(body) {
-  return jsdom.jsdom(`<body>
+  return new JSDOM(`<body>
 <article class="hash-event" id="" pubkey="" sign="">
   <div>${body}</div>
   <div>
@@ -56,7 +56,7 @@ function rawEventDOM(body) {
   </div>
   <div>contexts: <span class="event-contexts"></span></div>
 </article>
-</body>`).querySelector("article");
+</body>`).window.document.querySelector("article");
 }
 
 

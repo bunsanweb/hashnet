@@ -1,7 +1,7 @@
 // node --es_staging use-context-actor.js
 "Use strict";
 
-const jsdom = require("jsdom");
+const {JSDOM} = require("jsdom");
 
 const {
   epochContexts, updateContexts,
@@ -20,7 +20,7 @@ const me = newActor(Buffer.from("cafe4c027decaffe".repeat(4), "hex"));
 console.log(me);
 
 // make signed event
-const doc = jsdom.jsdom();
+const doc = new JSDOM().window.document;
 const eventSrc = doc.createElement("article");
 eventSrc.class = "hash-event";
 eventSrc.innerHTML = `
