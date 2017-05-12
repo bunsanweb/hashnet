@@ -27,8 +27,8 @@ class Web {
   get address() {
     return this.server.address();
   }
-  start() {
-    this.server.listen();
+  start(...args) {
+    this.server.listen(...args);
   }
   stop() {
     this.server.close();
