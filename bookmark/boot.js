@@ -22,7 +22,7 @@ const {FullMesh} = require("../hub/fullmesh");
 const {IdDistance} = require("../hub/iddist");
 const {Bookmark} = require("./client");
 
-function boot(argv = {}) {
+function boot(argv = {}, callback = undefined) {
   const hashnet = new HashNet();
   const me = new Me();
   const bookmark = new Bookmark(hashnet, me, argv.nickname);
@@ -38,6 +38,6 @@ function boot(argv = {}) {
   hub.run(iddist);
   const watcher = new Watcher(hub);
 
-  web.start();
+  web.start(argv.port, callback);
   return {hashnet, me, hub, sitekey, publisher, web, attending, bookmark};
 }
