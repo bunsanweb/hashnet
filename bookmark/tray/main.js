@@ -12,14 +12,17 @@ const {
 } = require("electron");
 
 const {hostInterfaces, hostAddresses} = require("../../util/net");
+const {Config} = require("../config");
 const {boot} = require("../boot");
 const {captureUrl} = require("./capture/index");
 const {DialogMain} = require("./dialog");
 
 let top = {}; // prevent gc to keep windows
 
-// TBD: use stored config
-const env = boot({});
+const config = new Config(app.getPath("userData"));
+const env = boot(config.load(), () => {
+  config.update({port: env.web.address.port}).catch(console.error);
+});
 
 if (app.dock) app.dock.hide();
 app.once("ready", ev => {
@@ -93,8 +96,9 @@ function updateNickname() {
   const src = `file://${__dirname}/nickname/index.html`;
   const nickname = env.bookmark.nickname;
   top.dialog.open(src, trayDialogBounds(0.5), {nickname}).
-    then(result => {
-      env.bookmark.nickname = result.nickname;
+    then(({nickname}) => {
+      env.bookmark.nickname = nickname;
+      config.update({nickname}).catch(console.error);
     }, error => {});
 }
 function addSubscribingPeer() {
