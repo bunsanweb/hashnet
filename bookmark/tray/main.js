@@ -13,6 +13,7 @@ const {
 
 const {hostInterfaces, hostAddresses} = require("../../util/net");
 const {Config} = require("../config");
+const {PeerListCache} = require("../peerlistcache");
 const {boot} = require("../boot");
 const {captureUrl} = require("./capture/index");
 const {DialogMain} = require("./dialog");
@@ -27,6 +28,10 @@ const env = boot(config.load(), () => {
     sitekey: env.sitekey.me.me.privkey.toString("hex"),
   };
   config.complement(stored).catch(console.error);
+  try {
+    const peerlistcache = new PeerListCache(env.hub, app.getPath("userData"));
+    peerlistcache.load();
+  } catch (err) {console.log(err);}
 });
 
 if (app.dock) app.dock.hide();
