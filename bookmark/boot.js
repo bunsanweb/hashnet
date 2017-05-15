@@ -22,12 +22,16 @@ const {FullMesh} = require("../hub/fullmesh");
 const {IdDistance} = require("../hub/iddist");
 const {Bookmark} = require("./client");
 
+function hex2buf(hex) {
+  return /^[0-9a-fA-F]{64}$/.test(hex) ? Buffer.from(hex, "hex") : undefined;
+}
+
 function boot(argv = {}, callback = undefined) {
   const hashnet = new HashNet();
-  const me = new Me();
+  const me =  new Me(hex2buf(argv.me));
   const bookmark = new Bookmark(hashnet, me, argv.nickname);
   const publisher = new Publisher(me.pubkey);
-  const sitekey = new SiteKey();
+  const sitekey = new SiteKey(hex2buf(argv.sitekey));
   const attending = new Attending(sitekey, publisher);
   const web = new Web(publisher, sitekey);
   const sync = new Sync(hashnet, me, publisher);
