@@ -21,7 +21,12 @@ let top = {}; // prevent gc to keep windows
 
 const config = new Config(app.getPath("userData"));
 const env = boot(config.load(), () => {
-  config.update({port: env.web.address.port}).catch(console.error);
+  const stored = {
+    port: env.web.address.port,
+    me: env.me.me.privkey.toString("hex"),
+    sitekey: env.sitekey.me.me.privkey.toString("hex"),
+  };
+  config.complement(stored).catch(console.error);
 });
 
 if (app.dock) app.dock.hide();
