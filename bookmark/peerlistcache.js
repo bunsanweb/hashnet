@@ -8,10 +8,8 @@ module.exports = Object.freeze(Object.create(null, {
 
 const fs = require("fs");
 const {join} = require("path");
-function promisify(func) {
-  return (...argv) => new Promise(
-      (f, r) => func(...argv, (err, data) => err ? r(err) : f(data)));
-}
+const {promisify} = require("../util/compat");
+
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 

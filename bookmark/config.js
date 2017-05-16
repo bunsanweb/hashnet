@@ -7,12 +7,9 @@ module.exports = Object.freeze(Object.create(null, {
 
 const fs = require("fs");
 const {join} = require("path");
+const {promisify} = require("../util/compat");
 
-function promissify(func) {
-  return (...argv) => new Promise(
-      (f, r) => func(...argv, (err, data) => err ? r(err) : f(data)));
-}
-const writeFile = promissify(fs.writeFile);
+const writeFile = promisify(fs.writeFile);
 
 
 class Config {
