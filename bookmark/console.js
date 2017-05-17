@@ -15,7 +15,19 @@ function makeConsole(vars) {
 }
 
 function main() {
-  const argv = yargs.string("nickname").argv;
+  const argv = yargs.option("nickname", {
+    type: "string",
+    describe: "A nickname for bookmark event",
+  }).option("port", {
+    type: "number",
+    describe: "A port number (>= 1000, < 65535) for site",
+  }).option("me", {
+    type: "string",
+    describe: "The private key hex string (64 characters) for me",
+  }).option("sitekey", {
+    type: "string",
+    describe: "The private key hex string (64 characters) for sitekey",
+  }).config("config").help("help").argv;
   const vars = boot(argv);
   const server = makeConsole(vars);
   function output(...args) {
