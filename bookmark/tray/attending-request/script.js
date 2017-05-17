@@ -1,7 +1,7 @@
 "use strict";
 
 window.addEventListener("load", ev => {
-  const {DialogRenderer, injectInputListPopup} = require("../dialog");
+  const {DialogRenderer} = require("../dialog");
   const peer = document.getElementById("peer");
   const me = document.getElementById("me");
   const meList = document.getElementById("me-list");
@@ -25,5 +25,5 @@ window.addEventListener("load", ev => {
     dialog.reject({canceled: true});
   }, false);
 
-  injectInputListPopup();
+  require("../inputlistpopup");
 }, false);
