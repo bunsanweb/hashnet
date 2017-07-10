@@ -1,4 +1,4 @@
-# Anaatta Hashnet
+# Hashnet
 
 "hashnet" is decentralaized universal event system for
 [anatta platform](https://github.com/anatta-project/anatta)
