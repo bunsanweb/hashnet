@@ -1,6 +1,12 @@
 # Learn with building bookmark network
 
-## Boo console and `me`
+For understanding the hastnet architecture,
+this article lists the commentaries
+with each steps for playing the `hasnet` `bookmark` demo.
+
+---
+
+## Boot console UI and `me`
 
 At first, **run console UI** as "alice"
 
@@ -49,6 +55,8 @@ as `--me=9313ce1c618d412ca6e1eeffc53e181c24e54249d045624bcc18302a9a178c77`.
 
 (The private key is yet revealed at `me.me.privkey`).
 
+---
+
 ## "Put" an event via `bookmark.post()`
 
 The console program includes **simple "Bookmark sharing" demo**.
@@ -78,7 +86,7 @@ alice(78f8867...)> hashnet.arrival
 [ Event {} ]
 ```
 
-### About the `Event` structure
+### Note: About the `Event` structure
 
 The **`Event` object** is a `Proxy` object of `DOMElement` for the event HTML data.
 The raw DOM tree is available at the `event.$$.dom` property as:
@@ -192,7 +200,7 @@ the **`default` values** are implicitly applied.
 For example, "timestamp"'s default is `null`,  but the type is `Date`,
 so the default value becomes `new Date(null)`.
 
-### Process to put an event to the `hashnet`
+### Note: Process to put an event to the `hashnet`
 
 To put an evnet to `hashnet` as:
 
@@ -211,7 +219,7 @@ For validating the every event as:
 
 `hashnet` rejects invalid events.
 
-### Subscribe events woth `channel`s
+### Note: Subscribe events woth `channel`s
 
 The `channel` is a filtered queue for **pull** style event processing.
 A channel is made with `hashnet.makeChannel(filterDesc)`.
@@ -245,7 +253,7 @@ incommingBookmark.pull().then(function loop(event) {
 });
 ```
 
-## About the "site"
+### Note: About the "site"
 
 When launching console, a **Web server is also launched**.
 The server is for sharing events in `hashnet`.
@@ -305,6 +313,8 @@ Synchronizing event list from `hashnet` to `site` is just **`hashnet` channel ap
 - `pull()` hashnet events then put them into `site` with signed order, forever.
 
 
+---
+
 ## Launch another console as Bob, and follow alice with `hub`
 
 Launch bob the same way:
@@ -363,8 +373,9 @@ alice(78f8867...)>
 
 ```
 
+---
 
-## Make `hashnet` web
+## Make `hashnet` as a network
 
 On two peers connected, the hashnet forms as a full featured network.
 It is enabled  `attending` system for new actors that can request
