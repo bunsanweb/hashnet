@@ -1,7 +1,7 @@
 # Hashnet
 
 "hashnet" is decentralaized universal event system for
-[anatta platform](https://github.com/anatta-project/anatta)
+[anatta](https://github.com/anatta-project/anatta)
 
 This project is a proof of cencept code of the hashnet.
 
