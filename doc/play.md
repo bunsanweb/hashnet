@@ -219,7 +219,7 @@ For validating the every event as:
 
 `hashnet` rejects invalid events.
 
-### Note: Subscribe events woth `channel`s
+### Note: Subscribe events with `channel`s
 
 The `channel` is a filtered queue for **pull** style event processing.
 A channel is made with `hashnet.makeChannel(filterDesc)`.
@@ -229,16 +229,16 @@ The `filterDesc` object as:
 const now = new Date();
 const incomingBookmarks = hashnet.makeChannel({
   $event$timestamp: date => date > now,
-  $event$actor: actor => `actor` !== `${me.id}`,
+  $event$actor: actor => `${actor}` !== `${me.id}`,
   $event$contexts: ctxs => ctxs.includes("bookmark"),
 });
 ```
 
-Events of the "incomingBookmark" channel are:
+Events of the "`incomingBookmark`" channel are:
 
 - events arrived after the channel made
 - the actor is not me
-- "bookmark" event only
+- `"bookmark"` event only
 
 The filier is a list of pair of a property name of event and its value judgement function.
 A channel can `pull()` events **passed the all** filter judgements.
@@ -431,7 +431,8 @@ bob(5624b9e...)>
 ```
 
 The `attending` reqursts to  make an hashnet event at alice's site **(at exsited site)**.
-So `201` (Created) response with the url of a new event "Alice attended Carol" returned:
+The alice's site checks carol's request is valid.
+As aresult `201` (Created) response with the url of a new event "Alice attended Carol" returned:
 
 ```html
 <html><head></head><body><article class="hash-event" id="a6c9037d092977844884abc947d5934063ead98dbd71c6f563817bbbfb8ec5b1" pubkey="042a608f20d5298c157ff6979ab3f51156cd6e043d0e73482859991948fa317be8d25d563fc5bc65012ee3e931ce085aba7634dd6bfb0cd8ecfb42acb6778a266e" sign="3045022100957251f016708e22af576ec2be73457bb97977b1826e1a6a086c81cffb1e262f02201629818a20f6b7da5d4dd34d9aae76bc622afba2c0e6157ad952010800cb7701">
