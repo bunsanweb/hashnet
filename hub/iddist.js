@@ -43,7 +43,7 @@ function distance(idA, idB) {
   const a = Buffer.from(new URL(idA).pathname, "hex");
   const b = Buffer.from(new URL(idB).pathname, "hex");
   console.assert(a.length === 32 && b.length === 32, "ID should be 256 bits");
-  // compare xor distance as little endien
+  // compare xor distance as little endian
   let clz256 = 0;
   for (let i = 31; i >= 0; i--) {
     const clz8 = Math.clz32(a[i] ^ b[i]) - 24;
