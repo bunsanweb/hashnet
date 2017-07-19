@@ -191,6 +191,14 @@ The "site"  publish the events as a Web Server.
 The "site" itself has its own key pair called `sitekey` which functions are same as `me`.
 It is for systems to validating "site" URLs itself from others.
 
+At next section, `hub` checks whether the site is valid.
+The validity is signed with the `sitekey` to the `hub`
+requested URL: as its "HOST" header in HTTP requests.
+
+The hash id of `sitekey`s become the identity of the "site"s.
+IP address an domain name would be multiple to the "site" web server,
+but its sitekey stays single.
+
 ## `hub`
 
 For shared "from" network, handling the shared events to `hashnet` calls `hub`.
@@ -233,11 +241,46 @@ function distance(idA, idB) {
 The `hub` spawn a "$peer$added" system context event when a valid "site" URL added.
 It can make other `hub`s know the "site" existance over netkwork.
 
-The `hub` also implements adding "site" from the "$peer$added" event arrivals.
+The `hub` also implements adding "site" from the **"$peer$added"** event arrivals.
 
-It can make automatic hashnet network growth when one peer accepted.
+It can make automatic hashnet network growth when one of existed peers accepted new one.
 (It can also implements other type of automated peer managements as voting or rejection)
+
 
 ## `attending` system
 
-TBD
+Once over two peers added to their `hub` each other,
+new peers accepted one of them are "attended" to the network.
+
+For the new peers side, when they want to "attend" to,
+they would "request" to existed ones.
+These are called "attending" request.
+
+The "attending" request is made also application system of "hashnet".
+
+Flow of the attending system is:
+
+- (New-peer adds the Existed-peer to their `hub`)
+- New-peer's "site" publishes a signed event **"$peer$attending"** for request to attending to the network with:
+   - New-peer's self URL
+   - The requesting Existed-peer's "site" URL
+- New-peer's "site" does HTTP request to the requesting Extsted-peer's "site"
+   - "POST" request
+   - special path to "/hash/attending"
+   - with "REFERER" header as the signed attending event URL
+- The Existing-peer's "site" checks the HTTP request
+   - fetch the signed event by the REFERER URL
+   - the signed event is valid
+   - the URL of self URL based on the HOST header
+   - fetch the New-peer's sitekey, then check it same with the signed attending event's actor.
+- The Existing-peer's "site" publishes a signed event **"$peer$attended"** with
+   - the New-peer's site URL
+   - NOTE: the "$peer$added" made by "site" automatically (not "me")
+- The other-peers in the network get the "$peer$attended" sined event, then
+   - `hub`s watch the "$peer$attended" events to add their peer list (same way as "$peer$added" events handling).
+
+The important point is, "site"s just announce an existence of a  New-peer to the network,
+then the judgements to join it are done by each `hub` as an agent of `me` (not by "site").
+
+It is able to adding more negotiation of consensus for joining new-peers as a peer strategy;
+e.g. adding after several existed-peers approved (by signed events).
