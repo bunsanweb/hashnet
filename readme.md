@@ -47,8 +47,9 @@ For the tray UI, the configuration is stored.
 
 ## Next: Learn with playing on console UI
 
-see: [doc/play.md](doc/play.md)
+- Annotated step by step guide for bookmark demo: [doc/play.md](doc/play.md)
 
 ## For more detail
 
-see: [doc/design.md](doc/design.md)
+- About program design for `hashnet` objects: [doc/design.md](doc/design.md)
+- About network simulation for `hashnet` strategies: [doc/simulations.md](doc/simulations.md)
