@@ -1,8 +1,8 @@
 # Learn with building bookmark network
 
-For understanding the hastnet architecture,
+For understanding the hashnet architecture,
 this article lists the commentaries
-with each steps for playing the `hasnet` `bookmark` demo.
+with each steps for playing the `hashnet` `bookmark` demo.
 
 ---
 
@@ -13,7 +13,7 @@ At first, **run console UI** as "alice"
 ```bash
 $ npm run console -- --nickname=alice
 
-> hashnet@0.0.1 console /Users/bellbind/projects/hashnet
+> hashnet@0.0.1 console /somewhere/to/hashnet
 > node bookmark/console "--nickname=alice"
 
 alice(78f8867...)>
@@ -49,7 +49,7 @@ alice(78f8867...)> crypto.createHash("sha256").update(me.pubkey).digest("hex")
 '78f886732fa66bef0ca83f571b1328986d308046cbbbed02c9c17fc87bd2b3ed'
 ```
 
-The key pair is randomely generated on boot time.
+The key pair is randomly generated on boot time.
 Or, you can use the own private key with the option `--me`
 as `--me=9313ce1c618d412ca6e1eeffc53e181c24e54249d045624bcc18302a9a178c77`.
 
@@ -102,7 +102,7 @@ It embeds many **attributes** of the event information. For example:
 - `id`: The event id based on the sha256 **hex digest of the `innerHTML`**
 - `sign`: Digital **signature for the `id`** by the event publisher(called as **"actor"**)
 - `pubkey`: Public key hex of the actor (**outside** of the signed data)
-- `event-actor`: Identity URL of the actor (embeded **in** the signed data)
+- `event-actor`: Identity URL of the actor (embedded **in** the signed data)
 - `event-contexts`: denotes carried information on the event, called **contexts**.
 
 The "event-context" values in the event are "linklabel" and "bookmark".
@@ -195,19 +195,19 @@ alice(78f8867...)> hashnet.contexts.$event
     default: '' } ]
 ```
 
-If the value of an attributes is not embeded in the DOM tree,
+If the value of an attributes is not embedded in the DOM tree,
 the **`default` values** are implicitly applied.
 For example, "timestamp"'s default is `null`,  but the type is `Date`,
 so the default value becomes `new Date(null)`.
 
 ### Note: Process to put an event to the `hashnet`
 
-To put an evnet to `hashnet` as:
+To put an event to `hashnet` as:
 
 1. Make an event as DOM Element with filling properties, especially **`actor` URL** as `me.id`
-2. Caclurate the **event ID** with the `innerHTML`
+2. Calculate the **event ID** with the `innerHTML`
 3. **Sign the ID** with `me`.
-4. Embed the ID, signatur, and public key into the event as attribute of the root element.
+4. Embed the ID, signature, and public key into the event as attribute of the root element.
 5. Put the signed event to the `hashnet`
 6. `hashnet` notify to event subscribers with `channel`
 
@@ -240,8 +240,8 @@ Events of the "`incomingBookmark`" channel are:
 - the actor is not me
 - `"bookmark"` event only
 
-The filier is a list of pair of a property name of event and its value judgement function.
-A channel can `pull()` events **passed the all** filter judgements.
+The `filterDesc` is a list of pair of a property name of event and its value judgment function.
+A channel can `pull()` events **passed the all** filter judgments.
 
 Channel's `pull()` returns a Promise for an incoming event.
 You should `pull()` again to get next events after processing the promise value.
@@ -275,10 +275,10 @@ with the ID(e.g. 6f7c49828d0e5d7bd3e2911ddfae0edac967ddc9f4e531a4a869ce932f64ac8
 
 - "http://192.168.3.2:51618/hash/event/6f7c49828d0e5d7bd3e2911ddfae0edac967ddc9f4e531a4a869ce932f64ac86"
 
-Note that the sites have **own identity**, called `sitekey`. It is same as `me`'s publick key system.
+Note that the sites have **own identity**, called `sitekey`. It is same as `me`'s public key system.
 
-The site can **also spawn signed events**. These site events are for decetralized network systems.
-The sitekey's publick key is published at:
+The site can **also spawn signed events**. These site events are for decentralized network systems.
+The sitekey's public key is published at:
 
 - "http://192.168.3.2:51618/hash/sitekey"
 
@@ -380,7 +380,7 @@ alice(78f8867...)>
 On two peers connected, the hashnet forms as a full featured network.
 It is enabled  `attending` system for new actors that can request
 to add them into the hashnet.
-Actors in the hastnet know new sites then adds to `hub` automatically
+Actors in the hashnet know new sites then adds to `hub` automatically
 
 For new actor carol, can do the request with the `attending` object as:
 
@@ -430,9 +430,9 @@ bob(5624b9e...)>
 
 ```
 
-The `attending` reqursts to  make an hashnet event at alice's site **(at exsited site)**.
+The `attending` requests to  make an hashnet event at alice's site **(at existed site)**.
 The alice's site checks carol's request is valid.
-As aresult `201` (Created) response with the url of a new event "Alice attended Carol" returned:
+As a result `201` (Created) response with the url of a new event "Alice attended Carol" returned:
 
 ```html
 <html><head></head><body><article class="hash-event" id="a6c9037d092977844884abc947d5934063ead98dbd71c6f563817bbbfb8ec5b1" pubkey="042a608f20d5298c157ff6979ab3f51156cd6e043d0e73482859991948fa317be8d25d563fc5bc65012ee3e931ce085aba7634dd6bfb0cd8ecfb42acb6778a266e" sign="3045022100957251f016708e22af576ec2be73457bb97977b1826e1a6a086c81cffb1e262f02201629818a20f6b7da5d4dd34d9aae76bc622afba2c0e6157ad952010800cb7701">
@@ -454,7 +454,7 @@ Bob's added is also as an event "Bob add Carol", then Alice also add Carol to th
 
 ## Summary
 
-- Hashnet is a system bsed on signed events on actors
+- Hashnet is a system based on signed events on actors
 - The event carries any information for decentralized systems (e.g. bookmark sharing)
 - Decentralized systems run with each ends: event producers and event consumers
 - Networking for Hashnet itself is made on the event system(`site`, `hub`, `attending`)

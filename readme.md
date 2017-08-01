@@ -1,13 +1,13 @@
 # Hashnet
 
-"hashnet" is decentralaized universal event system for
+"hashnet" is decentralized universal event system for
 [anatta](https://github.com/anatta-project/anatta)
 
-This project is a proof of cencept code of the hashnet.
+This project is a proof of concept code of the hashnet.
 
-## howto
+## How to setup
 
-Preparing the code, clone with git then "npn install" to resolve dependencies.
+Preparing the code, clone with git then "npm install" to resolve dependencies.
 
 ```bash
 $ git clone https://github.com/anatta-project/hashnet.git
@@ -24,7 +24,7 @@ Launching with console UI:
 ```bash
 $ npm run console -- --nickname=alice
 
-> hashnet@0.0.1 console /Users/bellbind/projects/hashnet
+> hashnet@0.0.1 console /somewhere/to/hashnet
 > node bookmark/console "--nickname=alice"
 
 alice(f8e107e...)>
@@ -41,7 +41,7 @@ Or, launching with system tray GUI:
 $ npm run tray
 ```
 
-After launching, "S!" icon shown on menubar.
+After launching, "S!" icon shown on menu-bar.
 Click it as menu "Network" - "nickname" to change the name.
 For the tray UI, the configuration is stored.
 

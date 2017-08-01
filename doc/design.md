@@ -7,8 +7,8 @@
 On hashnet, the primary object is **"event"**.
 Event carries any information over the network.
 
-Event is a HTML DOM element tree that embeded the attributes of
-the event infromation.
+Event is a HTML DOM element tree that embedded the attributes of
+the event information.
 Other objects in hashnet are made around the events.
 
 - `Event` is a HTML DOM tree.
@@ -97,7 +97,7 @@ It can forms universal event network as  bottom up / decentralized manner.
 
 ### Actor, target and Signed Event
 
-For usign `Event` as a system information,
+For using `Event` as a system information,
 it can verify the Event is valid as published one as:
 
 - It made by valid publisher itself.
@@ -140,7 +140,7 @@ The `me` object is managing a key pair, and signing to newly created events.
 Applications use `me` to publishing their events.
 Events loops to applications as:
 
-- Applications =raw event=> `me` =signed event=> `hasnet` =signed event=> `channel` =signed event=> Applications
+- Applications =raw event=> `me` =signed event=> `hashnet` =signed event=> `channel` =signed event=> Applications
 
 The systems of sharing events to others are also hashnet applications:
 
@@ -173,7 +173,7 @@ channel = hashnet.makeChannel({
 ```
 
 Filter the event that the context "bookmark"'s "note" attribute is not empty.
-The param `note` is always string because of the bookmark description "type".
+The parameter `note` is always string because of the bookmark description "type".
 When the events are not "bookmark" context, the filter rejects them.
 
 ## "site"
@@ -185,7 +185,7 @@ The "site"  publish the events as a Web Server.
 
 - `publisher`: manage events to publish from registered actors
 - `web`: HTTP Server gateway
-- `sitekey`: key pair for "site" itself (diferent from `me`)
+- `sitekey`: key pair for "site" itself (different from `me`)
 - `sync`: Events from `hashnet`'s `channel` to `publisher` (with `me`'s sign).
 
 The "site" itself has its own key pair called `sitekey` which functions are same as `me`.
@@ -239,7 +239,7 @@ function distance(idA, idB) {
 ### auto "site" adding with "$peer$added" event
 
 The `hub` spawn a "$peer$added" system context event when a valid "site" URL added.
-It can make other `hub`s know the "site" existance over netkwork.
+It can make other `hub`s know the "site" existence over network.
 
 The `hub` also implements adding "site" from the **"$peer$added"** event arrivals.
 
@@ -264,7 +264,7 @@ Flow of the attending system is:
 - New-peer's "site" publishes a signed event **"$peer$attending"** for request to attending to the network with:
    - New-peer's self URL
    - The requesting Existed-peer's "site" URL
-- New-peer's "site" does HTTP request to the requesting Extsted-peer's "site"
+- New-peer's "site" does HTTP request to the requesting Existed-peer's "site"
    - "POST" request
    - special path to "/hash/attending"
    - with "REFERER" header as the signed attending event URL
@@ -276,11 +276,11 @@ Flow of the attending system is:
 - The Existing-peer's "site" publishes a signed event **"$peer$attended"** with
    - the New-peer's site URL
    - NOTE: the "$peer$added" made by "site" automatically (not "me")
-- The other-peers in the network get the "$peer$attended" sined event, then
+- The other-peers in the network get the "$peer$attended" signed event, then
    - `hub`s watch the "$peer$attended" events to add their peer list (same way as "$peer$added" events handling).
 
 The important point is, "site"s just announce an existence of a  New-peer to the network,
-then the judgements to join it are done by each `hub` as an agent of `me` (not by "site").
+then the judgments to join it are done by each `hub` as an agent of `me` (not by "site").
 
 It is able to adding more negotiation of consensus for joining new-peers as a peer strategy;
 e.g. adding after several existed-peers approved (by signed events).
