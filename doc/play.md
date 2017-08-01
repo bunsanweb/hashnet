@@ -322,7 +322,7 @@ Launch bob the same way:
 ```
 $ npm run console -- --nickname=bob
 
-> hashnet@0.0.1 console /Users/bellbind/projects/hashnet
+> hashnet@0.0.1 console /somewhere/to/hashnet
 > node bookmark/console "--nickname=bob"
 
 bob(5624b9e...)>
@@ -387,7 +387,7 @@ For new actor carol, can do the request with the `attending` object as:
 ```
 $ npm run console -- --nickname=carol
 
-> hashnet@0.0.1 console /Users/bellbind/projects/hashnet
+> hashnet@0.0.1 console /somewhere/to/hashnet
 > node bookmark/console "--nickname=carol"
 
 carol(61499f5...)> self = web.peer()
