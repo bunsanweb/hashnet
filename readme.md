@@ -3,7 +3,8 @@
 "hashnet" is decentralized universal event system for
 [anatta](https://github.com/anatta-project/anatta)
 
-This project is a proof of concept code of the hashnet.
+This project is a proof of concept code for building growing networks
+with peers working on the hashnet architecture.
 
 ## How to setup
 
