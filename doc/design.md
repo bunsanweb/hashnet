@@ -2,31 +2,31 @@
 
 
 
-## events and contexts
+## Events and contexts
 
-On hashnet, the primary object is **"event"**.
-Event carries any information over the network.
+On hashnet, the primary object is an **"event"**.
+Events carries information over the network.
 
-Event is a HTML DOM element tree that embedded the attributes of
-the event information.
-Other objects in hashnet are made around the events.
+An event is a HTML DOM element tree that embeds the attributes of
+the event.
+Other objects in hashnet are made around events.
 
-- `Event` is a HTML DOM tree.
-- `Event` is a bundle of information attributes
+- An `Event` is a HTML DOM tree.
+- An `Event` is a bundle of information attributes.
 
-The subset of the information attributes calls **"context"**.
-The `Event` is formed by multiple "context"s.
+The subset of the information attributes are called **"context"**.
+An `Event` is formed by multiple "context"s.
 
 Each context defines the attributes: name, value type, default value and
 its locator on the DOM(CSS Selector and value accessors, e.g. `href`, `textContent`).
 
-- `Event` has multiple "context"s
+- An `Event` has multiple "context"s
 - "context" is a set of information attributes
 - Each attribute is defined as: name, value type, default value, and locator
 
 ### Core contexts
 
-Several predefined contexts required
+Several predefined contexts are required
 The first one is the **context for defining contexts** as "$context$added" context.
 The "context"s are extensible with the "$context$added" events in the hashnet
 (with the system interpreted the events).
@@ -57,7 +57,7 @@ The JSON value of self defined "$context$added" "attributes" as:
 ]
 ```
 
-The core `Event` attributes are also defined as **"$event"** context:
+The core `Event` attributes are also defined as **"$event"** contexts:
 
 - "id": string
 - "actor": URL
@@ -66,16 +66,16 @@ The core `Event` attributes are also defined as **"$event"** context:
 - "timestamp": Date
 - "contexts": strings (list of string)
 
-Every event has the "$event" context. "event" is not required in "contexts" attribute.
+Every event has an "$event" context. "event" is not required in "contexts" attribute.
 
-The hashnet API could access the "context"s ant their attribute values.
+The hashnet API can access the "context"s and their attribute values.
 The systems in hashnet extends the "context"s for carrying system information.
 
 The first system of hashnet is signed event features.
 
 ### Event attribute interface
 
-`Event` object can access its context and attributes with object properties as:
+An `Event` object can access its context and attributes with object properties with:
 `event.contest.attribute` or `event.context$attribute` style.
 The latter style is applied for channel filtering descriptions.
 
@@ -85,27 +85,27 @@ For example, accessing the event "target" is `event.$event$target` which is `URL
 ### Event ID as a content
 
 The event **"id" is based on its content value**. just as a hash digest hex.
-The "id" is universal identity, that is,
+The "id" is an universal identity, that is,
 the event is identical its content as value, not depend on its location.
 
 Events are transparent over the network.
 If the event is in local memory or over the network,
-these events are same when their contents are same value.
+these events are the same when their contents are the same value.
 
-When merged the `hashnet` of two peers, each `hashnet` consists same events with no conflicts.
-It can forms universal event network as  bottom up / decentralized manner.
+When merged the `hashnet` of two peers, each `hashnet` consists of the same events with no conflicts.
+It can form an universal event network in a bottom up / decentralized manner.
 
 ### Actor, target and Signed Event
 
 For using `Event` as a system information,
-it can verify the Event is valid as published one as:
+it can verify that the Event is valid as published:
 
-- It made by valid publisher itself.
-- Any content is not modified by others.
+- That it was made a valid publisher.
+- That the content was not modified by others.
 - ...
 
 Using public key system as digital signature,
-the hashnet "actor" become as a valid event publisher.
+the hashnet "actor" becomes a valid event publisher.
 
 Each actor has a key pair.
 The "actor" URL in event content is based on the **hash digest value of their public key** as:
