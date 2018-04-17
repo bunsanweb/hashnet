@@ -1,14 +1,15 @@
 # Learn with building bookmark network
 
-For understanding the hashnet architecture,
-this article lists the commentaries
-with each steps for playing the `hashnet` `bookmark` demo.
+This article is a series of the commentaries
+for understanding the hashnet architecture,
+
+with steps for running the `hashnet` `bookmark` demo.
 
 ---
 
 ## Boot console UI and `me`
 
-At first, **run console UI** as "alice"
+First, **run console UI** as "alice"
 
 ```bash
 $ npm run console -- --nickname=alice
@@ -21,8 +22,8 @@ alice(78f8867...)>
 
 <!-- alice: 9313ce1c618d412ca6e1eeffc53e181c24e54249d045624bcc18302a9a178c7 -->
 
-The "78f867..." is the **identity** (also called ID) fragment of alice.
-The identity is stored on `me` object as:
+"78f867..." is the **identity** (also called ID) fragment of alice.
+The identity is stored on the `me` object as:
 
 ```
 alice(78f8867...)> me.id
@@ -42,7 +43,7 @@ URL {
 alice(78f8867...)>
 ```
 
-The identity value is just **SHA256 hex digest** of the public key of `me" as:
+The identity value is just the **SHA256 hex digest** of the public key of `me" as:
 
 ```
 alice(78f8867...)> crypto.createHash("sha256").update(me.pubkey).digest("hex")
@@ -51,25 +52,25 @@ alice(78f8867...)> crypto.createHash("sha256").update(me.pubkey).digest("hex")
 
 The key pair is randomly generated on boot time.
 Or, you can use the own private key with the option `--me`
-as `--me=9313ce1c618d412ca6e1eeffc53e181c24e54249d045624bcc18302a9a178c77`.
+e.x. `--me=9313ce1c618d412ca6e1eeffc53e181c24e54249d045624bcc18302a9a178c77`.
 
-(The private key is yet revealed at `me.me.privkey`).
+(The private key is revealed at `me.me.privkey`).
 
 ---
 
 ## "Put" an event via `bookmark.post()`
 
-The console program includes **simple "Bookmark sharing" demo**.
-It shares any URLs over the internet **as events** of the `hashnet`.
+The console program includes a simple **"Bookmark sharing"** demo.
+It shares any URL over the internet **as events** of the `hashnet`.
 
-To share the `http://example.com/` as:
+For example, to share `http://example.com/`:
 
 ```
 alice(78f8867...)> bookmark.post("http://example.com")
 undefined
 ```
 
-The `bookmark` object also notice arrived "bookmark" event as:
+The `bookmark` object also notices incoming "bookmark" events as:
 
 ```
 [http://example.com/ bookmarked by hash:78f886732fa66bef0ca83f571b1328986d308046cbbbed02c9c17fc87bd2b3ed]
@@ -79,7 +80,7 @@ Print out the notice as "[URL bookmarked by ID]".
 It is the URL just shared before and alice's ID.
 
 The `bookmark` is an application of `hashnet`.
-The "event" for bookmarking example.com URL is listed in it.
+The "event" for bookmarking example.com URL is listed within it.
 
 ```
 alice(78f8867...)> hashnet.arrival
@@ -89,7 +90,7 @@ alice(78f8867...)> hashnet.arrival
 ### Note: About the `Event` structure
 
 The **`Event` object** is a `Proxy` object of `DOMElement` for the event HTML data.
-The raw DOM tree is available at the `event.$$.dom` property as:
+The raw DOM tree is available at the `event.$$.dom` property with:
 
 ```
 alice(78f8867...)> hashnet.arrival[0].$$.dom.outerHTML
@@ -113,7 +114,7 @@ alice(78f8867...)> hashnet.arrival[0].bookmark
 { note: '' }
 ```
 
-or directly attribute access with `context$attribute` navigation as:
+or directly attribute access with `context$attribute` navigation with:
 
 ```
 alice(78f8867...)> hashnet.arrival[0].bookmark$note
@@ -200,9 +201,9 @@ the **`default` values** are implicitly applied.
 For example, "timestamp"'s default is `null`,  but the type is `Date`,
 so the default value becomes `new Date(null)`.
 
-### Note: Process to put an event to the `hashnet`
+### Process to put an event onto the `hashnet`
 
-To put an event to `hashnet` as:
+To put an event on `hashnet`:
 
 1. Make an event as DOM Element with filling properties, especially **`actor` URL** as `me.id`
 2. Calculate the **event ID** with the `innerHTML`
@@ -211,7 +212,7 @@ To put an event to `hashnet` as:
 5. Put the signed event to the `hashnet`
 6. `hashnet` notify to event subscribers with `channel`
 
-For validating the every event as:
+For validating every event:
 
 2. `id` is based on `innerHTML`
 1. `actor` is based on `pubkey`
@@ -219,7 +220,7 @@ For validating the every event as:
 
 `hashnet` rejects invalid events.
 
-### Note: Subscribe events with `channel`s
+### Note: Subscribe to events with `channel`s
 
 The `channel` is a filtered queue for **pull** style event processing.
 A channel is made with `hashnet.makeChannel(filterDesc)`.
@@ -253,10 +254,10 @@ incommingBookmark.pull().then(function loop(event) {
 });
 ```
 
-### Note: About the "site"
+### About the "site"
 
-When launching console, a **Web server is also launched**.
-The server is for sharing events in `hashnet`.
+When the console is launched, a **Web server is also launched**.
+The server is for sharing events on `hashnet`.
 The sharing system calls **"site"**. Web server of the "site" is `web` object.
 
 You can tell a URL for the "site" as:
@@ -266,12 +267,12 @@ alice(78f8867...)> web.peer()
 'http://192.168.3.2:51618/'
 ```
 
-Web Browser can get the **event list** HTML from:
+A web browser can get the **event list** HTML from:
 
 - "http://192.168.3.2:51618/hash/items/".
 
 And it can get an **event HTML**
-with the ID(e.g. 6f7c49828d0e5d7bd3e2911ddfae0edac967ddc9f4e531a4a869ce932f64ac86) as:
+with an ID(e.g. 6f7c49828d0e5d7bd3e2911ddfae0edac967ddc9f4e531a4a869ce932f64ac86) with:
 
 - "http://192.168.3.2:51618/hash/event/6f7c49828d0e5d7bd3e2911ddfae0edac967ddc9f4e531a4a869ce932f64ac86"
 
@@ -330,8 +331,8 @@ bob(5624b9e...)>
 
 <!-- bob: 3aa6f382f5d1f7bf8416b8368c115cf71073f5b16250dbbf66fbf1262b7cc47a -->
 
-To get the events of others into my `hashnet`, there is the `hub` object.
-The `hub` do getting events from sites then putting into `hashnet` **autonomously**.
+To get events from others into your `hashnet`, there is the `hub` object.
+The `hub` gets events from sites then put them into `hashnet` **autonomously**.
 There are several **strategies** installed for the scheduling and selection of the sites.
 
 - Distance of the sitekey ID as binary tree.
@@ -349,11 +350,11 @@ bob(5624b9e...)>
 
 ```
 
-The alice's bookmark event arrives to bob's `hashnet`.
+Alice's bookmark event arrives onto Bob's `hashnet`.
 
-Bob follows alice's events now.
-But alice does not follow bob yet because alice does not know bob.
-When bob made the bookmark event, no event arrive on alice:
+Bob now follows Alice's events.
+But Alice does not follow yet Bob because Alice does not know Bob.
+When Bob made the bookmark event, no event arrives on Alice:
 
 ```
 bob(5624b9e...)> bookmark.post("http://example.net", "Hello")
@@ -363,7 +364,7 @@ bob(5624b9e...)>
 
 ```
 
-To arrive the bob's events, alice should add bob to their `hub`:
+To receive the Bob's events, Alice should add Bob to their `hub`:
 
 ```
 alice(78f8867...)> hub.add('http://192.168.3.2:52286/');
@@ -377,7 +378,7 @@ alice(78f8867...)>
 
 ## Make `hashnet` as a network
 
-On two peers connected, the hashnet forms as a full featured network.
+When two peers are connected, the hashnet forms a fully featured network.
 It is enabled  `attending` system for new actors that can request
 to add them into the hashnet.
 Actors in the hashnet know new sites then adds to `hub` automatically
@@ -430,7 +431,7 @@ bob(5624b9e...)>
 
 ```
 
-The `attending` requests to  make an hashnet event at alice's site **(at existed site)**.
+The `attending` requests to  make an hashnet event at Alice's site **(at existing site)**.
 The alice's site checks carol's request is valid.
 As a result `201` (Created) response with the url of a new event "Alice attended Carol" returned:
 
