@@ -353,7 +353,7 @@ bob(5624b9e...)>
 Alice's bookmark event arrives onto Bob's `hashnet`.
 
 Bob now follows Alice's events.
-But Alice does not follow yet Bob because Alice does not know Bob.
+But Alice does not yet follow Bob because Alice does not know Bob.
 When Bob made the bookmark event, no event arrives on Alice:
 
 ```
@@ -383,7 +383,7 @@ It is enabled  `attending` system for new actors that can request
 to add them into the hashnet.
 Actors in the hashnet know new sites then adds to `hub` automatically
 
-For new actor carol, can do the request with the `attending` object as:
+The new actor Carol, can request with the `attending` object with:
 
 ```
 $ npm run console -- --nickname=carol
@@ -432,8 +432,8 @@ bob(5624b9e...)>
 ```
 
 The `attending` requests to  make an hashnet event at Alice's site **(at existing site)**.
-The alice's site checks carol's request is valid.
-As a result `201` (Created) response with the url of a new event "Alice attended Carol" returned:
+Alice's site checks that Carol's request is valid.
+As a result `201` (Created) response with the url of a new event "Alice attended Carol" is returned:
 
 ```html
 <html><head></head><body><article class="hash-event" id="a6c9037d092977844884abc947d5934063ead98dbd71c6f563817bbbfb8ec5b1" pubkey="042a608f20d5298c157ff6979ab3f51156cd6e043d0e73482859991948fa317be8d25d563fc5bc65012ee3e931ce085aba7634dd6bfb0cd8ecfb42acb6778a266e" sign="3045022100957251f016708e22af576ec2be73457bb97977b1826e1a6a086c81cffb1e262f02201629818a20f6b7da5d4dd34d9aae76bc622afba2c0e6157ad952010800cb7701">
@@ -450,8 +450,8 @@ As a result `201` (Created) response with the url of a new event "Alice attended
 
 The "event-target" is Carol's URL, Note that the event actor is `sitekey` not `me`.
 
-When the event arrived to Bob, Bob add Carol to their `hub`.
-Bob's added is also as an event "Bob add Carol", then Alice also add Carol to their `hub`.
+When the event arrives to Bob, Bob adds Carol to their `hub`.
+Bob's action is also recorded as an event "Bob add Carol", then Alice also adds Carol to their `hub`.
 
 ## Summary
 
