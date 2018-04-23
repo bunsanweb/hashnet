@@ -97,18 +97,19 @@ It can form an universal event network in a bottom up / decentralized manner.
 
 ### Actor, target and Signed Event
 
-For using `Event` as a system information,
+By using `Event` as a system information,
 it can verify that the Event is valid as published:
 
 - That it was made a valid publisher.
 - That the content was not modified by others.
 - ...
 
-Using public key system as digital signature,
+By using a public key system as a digital signature,
 the hashnet "actor" becomes a valid event publisher.
 
 Each actor has a key pair.
-The "actor" URL in event content is based on the **hash digest value of their public key** as:
+The "actor" URL in event content is based on the **hash digest value of their public key**, 
+for example:
 
 - "hash:78f886732fa66bef0ca83f571b1328986d308046cbbbed02c9c17fc87bd2b3ed"
 
@@ -120,29 +121,29 @@ the event means:
 
 is valid information for the "actor".
 
-For example, the "actor" wants to say "I am a owner of the web resource".
+For example, the "actor" wants to say "I am a owner of this web resource".
 The web resource shows "my owner is the actor" with their public key at the "target" URL,
 then the actor signs it as "Event".
 
 ## 'hashnet' and `me`
 
-The `hashnet` object manages the "event"s and "context"s in each peer.
-It keeps valid events in local and provides as `channel`s to event applications.
+The `hashnet` object manages the "event"s and "context"s of each peer.
+It keeps valid events in local and provides `channel`s to event applications.
 
 The origin of events in `hashnet` are:
 
-- (Applications) Put a local "actor" (called "me") signed events into the `hashnet`
+- (Applications) Put a local "actor's" (called "me") signed events into the `hashnet`
 - ("hashnet" Systems) Put arrived valid events over network into the `hashnet`
 
 (NOTE: The latter says `hashnet` accepts valid events to get from network anyways.)
 
-The `me` object is managing a key pair, and signing to newly created events.
+The `me` object is managing a key pair, and signs newly created events.
 Applications use `me` to publishing their events.
 Events loops to applications as:
 
 - Applications =raw event=> `me` =signed event=> `hashnet` =signed event=> `channel` =signed event=> Applications
 
-The systems of sharing events to others are also hashnet applications:
+The system of sharing events to others are also hashnet applications:
 
 - (sharing to network): `hashnet` =signed event=> `channel` =signed event=> Web Server
 - (shared from network): Web Server =signed event=> `hashnet`
@@ -156,7 +157,7 @@ The `channel` can pull an event each time as ECMAScript `Promise`.
 You can use `channel`s with recursive promise handlers or `async` functions.
 
 When making a `channel`, you must set the filter conditions for processing events.
-The filters can use event attribute values as:
+The filters can use event attribute values such as:
 
 - filter with specific "context"s
 - filter with specific "actor"
@@ -178,20 +179,20 @@ When the events are not "bookmark" context, the filter rejects them.
 
 ## "site"
 
-For sharing "to" network, the system calls "site".
-The "site"  publish the events as a Web Server.
+For sharing "to" the network, the system calls a "site".
+The "site"  publishes events as a Web Server.
 
 "site" forms several objects:
 
-- `publisher`: manage events to publish from registered actors
+- `publisher`: manages events to publish from registered actors
 - `web`: HTTP Server gateway
 - `sitekey`: key pair for "site" itself (different from `me`)
 - `sync`: Events from `hashnet`'s `channel` to `publisher` (with `me`'s sign).
 
-The "site" itself has its own key pair called `sitekey` which functions are same as `me`.
-It is for systems to validating "site" URLs itself from others.
+The "site" itself has its own key pair called a `sitekey` whose functions are the same as `me`.
+It is used for systems to validate their own "site" URLs from others.
 
-At next section, `hub` checks whether the site is valid.
+In the next section, `hub` checks whether the site is valid.
 The validity is signed with the `sitekey` to the `hub`
 requested URL: as its "HOST" header in HTTP requests.
 
