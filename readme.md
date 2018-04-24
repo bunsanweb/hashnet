@@ -53,4 +53,4 @@ The configuration for the tray UI, is stored.
 ## For more details
 
 - About program design for `hashnet` objects: [doc/design.md](doc/design.md)
-- Network simulation for strategies `hashnet`: [doc/simulations.md](doc/simulations.md)
+- Network simulation for strategies `hashnet`: [doc/simulation.md](doc/simulation.md)
