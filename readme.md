@@ -1,7 +1,7 @@
 # Hashnet
 
 "hashnet" is a decentralized universal event system for
-[anatta](https://github.com/anatta-project/anatta)
+[bunsanweb](https://github.com/bunsanweb/bunsanweb)
 
 This repo is a proof of concept for building growing networks
 with peers working on the hashnet architecture.
@@ -11,7 +11,7 @@ with peers working on the hashnet architecture.
 Clone the repo and then run "npm install" to resolve dependencies.
 
 ```bash
-$ git clone https://github.com/anatta-project/hashnet.git
+$ git clone https://github.com/bunsanweb/hashnet.git
 $ cd hashnet
 $ npm install
 ```
